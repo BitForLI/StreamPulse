@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "event_id": "evt-delivery-0003",
+  "event_time": "2026-08-27T09:30:00.123Z",
+  "ingest_time": "2026-08-27T09:30:01.012Z",
+  "request_id": "req-0003",
+  "content_id": "demo-live",
+  "object_type": "segment",
+  "path_template": "/live/{stream}/{segment}.m4s",
+  "node_id": "edge-syd-b",
+  "location": "au-sydney",
+  "network_id": "as-synthetic-1221",
+  "cache_status": "HIT",
+  "http_status": 200,
+  "bytes_sent": 810001,
+  "ttfb_ms": 28.3,
+  "transfer_ms": 401.8,
+  "future_optional_field": "v1-consumer-must-ignore-this"
+}

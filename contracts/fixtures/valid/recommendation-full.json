@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "recommendation_id": "rec-0002",
+  "created_at": "2026-08-27T09:34:00Z",
+  "valid_until": "2026-08-27T09:39:00Z",
+  "mode": "shadow",
+  "scope": {
+    "location": "au-sydney",
+    "network_id": "anon:0123456789abcdef"
+  },
+  "action": "adjust_node_weights",
+  "current": { "edge-syd-a": 0.4, "edge-syd-b": 0.6 },
+  "proposed": { "edge-syd-a": 0.3, "edge-syd-b": 0.7 },
+  "evidence_window": "10m",
+  "reason_codes": ["ERROR_RATE_ANOMALY", "MAX_WEIGHT_STEP_OK"],
+  "expected": {
+    "p95_ttfb_delta_ms": -12.0,
+    "error_rate_delta": -0.004,
+    "cost_units_delta": 0.001
+  },
+  "confidence": 0.72,
+  "model_version": "rules-ewma-v1",
+  "revision": 2
+}

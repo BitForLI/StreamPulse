@@ -1,0 +1,51 @@
+{
+  "measured_at_utc": "2026-08-29T09:20:22.3711320Z",
+  "clickhouse_url": "http://localhost:8123/",
+  "cache_reset": {
+    "SYSTEM DROP MARK CACHE": "ok",
+    "SYSTEM DROP UNCOMPRESSED CACHE": "ok",
+    "SYSTEM DROP QUERY CONDITION CACHE": "ok",
+    "SYSTEM DROP FILESYSTEM CACHE": "ok"
+  },
+  "table_rows": [
+    {"table": "content_metrics_5m", "rows": 250},
+    {"table": "dead_letters", "rows": 219},
+    {"table": "network_metrics_1m", "rows": 28},
+    {"table": "node_metrics_1m", "rows": 84},
+    {"table": "raw_delivery", "rows": 22584},
+    {"table": "raw_player", "rows": 5700},
+    {"table": "raw_routing", "rows": 22800}
+  ],
+  "queries": {
+    "node_quality_15m": {
+      "cold_ms": 12.746,
+      "hot_iterations": 20,
+      "hot_p50_ms": 9.83,
+      "hot_p95_ms": 27.857,
+      "read_rows": 168,
+      "read_bytes": 5202
+    },
+    "network_anomalies_24h": {
+      "cold_ms": 13.032,
+      "hot_iterations": 20,
+      "hot_p50_ms": 8.881,
+      "hot_p95_ms": 12.17,
+      "read_rows": 56,
+      "read_bytes": 1832
+    },
+    "content_across_nodes": {
+      "cold_ms": 21.256,
+      "hot_iterations": 20,
+      "hot_p50_ms": 16.967,
+      "hot_p95_ms": 23.337,
+      "read_rows": 45168,
+      "read_bytes": 3501400
+    }
+  },
+  "limitations": [
+    "Local single-node Docker benchmark; not a production capacity claim.",
+    "Synthetic event time is anchored to each table's maximum timestamp.",
+    "Cold measurement follows supported ClickHouse cache resets; OS page cache is not forcibly cleared.",
+    "Elapsed time includes localhost HTTP client overhead."
+  ]
+}

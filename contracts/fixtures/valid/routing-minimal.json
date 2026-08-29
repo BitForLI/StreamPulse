@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "event_id": "evt-routing-0001",
+  "event_time": "2026-08-27T09:30:00.100Z",
+  "request_id": "req-0001",
+  "candidate_nodes": ["edge-syd-a", "edge-syd-b"],
+  "selected_node": "edge-syd-a",
+  "policy": "weighted-rendezvous-v1",
+  "quality_snapshot_age_ms": 850,
+  "selected_weight": 0.73,
+  "fallback_level": 0,
+  "reason_codes": ["LOCAL_REGION", "HEALTHY", "CAPACITY_OK"]
+}

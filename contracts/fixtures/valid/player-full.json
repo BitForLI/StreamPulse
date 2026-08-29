@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "event_id": "evt-player-0002",
+  "event_time": "2026-08-27T09:30:02.900Z",
+  "session_id_hash": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "content_id": "demo-live",
+  "event_type": "segment_complete",
+  "segment_sequence": 1012,
+  "selected_bitrate_bps": 3000000,
+  "download_ms": 840,
+  "buffer_ms": 4200,
+  "startup_ms": null,
+  "rebuffer_ms": 0,
+  "error_code": null,
+  "trace_id": "trace-player-0002"
+}

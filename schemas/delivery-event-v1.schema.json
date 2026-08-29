@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/BitForLI/StreamPulse/schemas/delivery-event-v1.schema.json",
+  "title": "StreamPulse DeliveryEvent v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "event_id",
+    "event_time",
+    "ingest_time",
+    "request_id",
+    "content_id",
+    "object_type",
+    "path_template",
+    "node_id",
+    "location",
+    "network_id",
+    "cache_status",
+    "http_status",
+    "bytes_sent",
+    "ttfb_ms",
+    "transfer_ms"
+  ],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "event_id": { "type": "string", "minLength": 8, "maxLength": 128 },
+    "event_time": { "type": "string", "format": "date-time" },
+    "ingest_time": { "type": "string", "format": "date-time" },
+    "request_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "session_id_hash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "content_id": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "object_type": {
+      "enum": ["manifest", "segment", "image", "other", "UNKNOWN"]
+    },
+    "path_template": {
+      "type": "string",
+      "pattern": "^/[^?]*$",
+      "maxLength": 512
+    },
+    "node_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+    },
+    "location": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{1,127}$"
+    },
+    "network_id": {
+      "type": "string",
+      "pattern": "^(as-synthetic-[A-Za-z0-9._-]+|anon:[0-9a-f]{16,64}|UNKNOWN)$"
+    },
+    "cache_status": {
+      "enum": [
+        "HIT",
+        "MISS",
+        "BYPASS",
+        "EXPIRED",
+        "STALE",
+        "UPDATING",
+        "REVALIDATED",
+        "UNKNOWN"
+      ]
+    },
+    "http_status": { "type": "integer", "minimum": 100, "maximum": 599 },
+    "bytes_sent": { "type": "integer", "minimum": 0 },
+    "ttfb_ms": { "type": "number", "minimum": 0 },
+    "transfer_ms": { "type": "number", "minimum": 0 },
+    "origin_ms": { "type": "number", "minimum": 0 },
+    "segment_duration_ms": { "type": "integer", "minimum": 0 },
+    "bitrate_bps": { "type": "integer", "minimum": 0 },
+    "trace_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "sample_weight": { "type": "number", "exclusiveMinimum": 0 }
+  },
+  "additionalProperties": true
+}

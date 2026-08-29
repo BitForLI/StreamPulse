@@ -1,0 +1,8 @@
+<clickhouse>
+    <kafka>
+        <consumer>
+            <!-- New local consumer groups replay the retained synthetic run. -->
+            <auto_offset_reset>smallest</auto_offset_reset>
+        </consumer>
+    </kafka>
+</clickhouse>

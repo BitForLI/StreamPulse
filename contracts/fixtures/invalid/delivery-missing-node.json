@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "event_id": "evt-delivery-bad-0001",
+  "event_time": "2026-08-27T09:30:00.123Z",
+  "ingest_time": "2026-08-27T09:30:01.012Z",
+  "request_id": "req-bad-0001",
+  "content_id": "demo-live",
+  "object_type": "segment",
+  "path_template": "/live/{stream}/{segment}.m4s",
+  "location": "au-sydney",
+  "network_id": "as-synthetic-1221",
+  "cache_status": "HIT",
+  "http_status": 200,
+  "bytes_sent": 842331,
+  "ttfb_ms": 31.4,
+  "transfer_ms": 422.1
+}

@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "recommendation_id": "rec-bad-0001",
+  "created_at": "2026-08-27T09:31:00Z",
+  "valid_until": "2026-08-27T09:33:00Z",
+  "mode": "shadow",
+  "scope": {
+    "location": "au-sydney",
+    "network_id": "as-synthetic-1221"
+  },
+  "action": "adjust_node_weights",
+  "current": { "edge-syd-a": 0.5, "edge-syd-b": 0.5 },
+  "proposed": { "edge-syd-a": 0.2, "edge-syd-b": 0.8 },
+  "evidence_window": "5m",
+  "reason_codes": ["P95_LATENCY_ANOMALY"],
+  "expected": {
+    "p95_ttfb_delta_ms": -24.0,
+    "error_rate_delta": -0.008,
+    "cost_units_delta": 0.003
+  },
+  "confidence": 1.2,
+  "model_version": "rules-ewma-v1"
+}

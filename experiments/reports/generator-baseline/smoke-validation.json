@@ -1,0 +1,11 @@
+{
+  "delivery_key_count": 28,
+  "delivery_key_max_to_mean": 2.084142,
+  "duplicate_records": 9,
+  "records_by_topic": {
+    "cdn.delivery.v1": 309,
+    "cdn.player.v1": 75,
+    "cdn.routing.v1": 300
+  },
+  "schema_error_records": 8
+}

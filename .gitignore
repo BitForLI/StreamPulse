@@ -10,3 +10,12 @@
 .classpath
 .settings/
 bin/
+
+# Local test and experiment output
+**/__pycache__/
+*.py[cod]
+.pytest_cache/
+.tmp/
+.tools/
+experiments/raw/
+experiments/processed/

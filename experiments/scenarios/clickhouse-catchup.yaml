@@ -1,0 +1,47 @@
+seed: 20260829
+start_time: "2026-08-28T00:07:00Z"
+duration: 2m10s
+rate_per_second: 20
+out_of_order_max: 2s
+duplicate_rate: 0.01
+schema_error_rate: 0.005
+
+locations:
+  - name: au-sydney
+    networks: [as-synthetic-1221, as-synthetic-7545]
+  - name: au-melbourne
+    networks: [as-synthetic-1221, as-synthetic-4804]
+
+nodes:
+  - id: edge-syd-a
+    base_ttfb_ms: 25
+    capacity_rps: 100
+  - id: edge-syd-b
+    base_ttfb_ms: 38
+    capacity_rps: 100
+  - id: edge-mel-a
+    base_ttfb_ms: 31
+    capacity_rps: 100
+
+content:
+  count: 200
+  popularity: zipf
+
+scenarios:
+  - at: 20s
+    type: node_latency_spike
+    target: edge-syd-a
+    duration: 20s
+    added_latency_ms: 120
+  - at: 50s
+    type: node_5xx_spike
+    target: edge-syd-b
+    duration: 20s
+    error_rate: 0.20
+  - at: 1m20s
+    type: capacity_pressure
+    target: edge-mel-a
+    duration: 20s
+    target_capacity_rps: 95
+    added_latency_ms: 75
+    error_rate: 0.04

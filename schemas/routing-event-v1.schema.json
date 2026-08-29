@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/BitForLI/StreamPulse/schemas/routing-event-v1.schema.json",
+  "title": "StreamPulse RoutingEvent v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "event_id",
+    "event_time",
+    "request_id",
+    "candidate_nodes",
+    "selected_node",
+    "policy",
+    "quality_snapshot_age_ms",
+    "selected_weight",
+    "fallback_level",
+    "reason_codes"
+  ],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "event_id": { "type": "string", "minLength": 8, "maxLength": 128 },
+    "event_time": { "type": "string", "format": "date-time" },
+    "request_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "candidate_nodes": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 256,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+      }
+    },
+    "selected_node": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+    },
+    "policy": {
+      "enum": [
+        "deterministic",
+        "static-rendezvous",
+        "weighted-rendezvous-v1",
+        "adaptive",
+        "UNKNOWN"
+      ]
+    },
+    "quality_snapshot_age_ms": { "type": "integer", "minimum": 0 },
+    "selected_weight": { "type": "number", "minimum": 0, "maximum": 1 },
+    "fallback_level": { "type": "integer", "minimum": 0, "maximum": 32 },
+    "reason_codes": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "uniqueItems": true,
+      "items": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{1,63}$" }
+    },
+    "trace_id": { "type": "string", "minLength": 1, "maxLength": 128 }
+  },
+  "additionalProperties": true
+}

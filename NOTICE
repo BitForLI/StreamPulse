@@ -1,0 +1,8 @@
+StreamPulse
+
+The runtime scaffold in this repository is derived from Apache Flink Playgrounds,
+Copyright The Apache Software Foundation, licensed under the Apache License 2.0.
+
+StreamPulse-specific CDN schemas, analytics jobs, ClickHouse pipeline,
+recommendation service, experiments, and documentation are separate additions.
+See THIRD_PARTY.md and docs/upstream-baseline.md for the exact provenance boundary.

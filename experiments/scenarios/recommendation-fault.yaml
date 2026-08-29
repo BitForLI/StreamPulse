@@ -1,0 +1,42 @@
+seed: 20260830
+start_time: "2026-08-29T00:00:00Z"
+duration: 7m
+rate_per_second: 60
+out_of_order_max: 5s
+duplicate_rate: 0.01
+schema_error_rate: 0.005
+
+locations:
+  - name: au-sydney
+    networks: [as-synthetic-1221, as-synthetic-7545]
+  - name: au-melbourne
+    networks: [as-synthetic-1221, as-synthetic-4804]
+
+nodes:
+  - id: edge-syd-a
+    base_ttfb_ms: 25
+    capacity_rps: 100
+  - id: edge-syd-b
+    base_ttfb_ms: 38
+    capacity_rps: 100
+  - id: edge-mel-a
+    base_ttfb_ms: 31
+    capacity_rps: 100
+
+content:
+  count: 200
+  popularity: zipf
+
+# Normal history comes first. The combined latency/error fault occupies the
+# final completed windows so evaluate can detect it before metrics go stale.
+scenarios:
+  - at: 5m
+    type: node_latency_spike
+    target: edge-syd-a
+    duration: 2m
+    added_latency_ms: 180
+  - at: 5m
+    type: node_5xx_spike
+    target: edge-syd-a
+    duration: 2m
+    error_rate: 0.20

@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/BitForLI/StreamPulse/schemas/player-event-v1.schema.json",
+  "title": "StreamPulse PlayerEvent v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "event_id",
+    "event_time",
+    "session_id_hash",
+    "content_id",
+    "event_type"
+  ],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "event_id": { "type": "string", "minLength": 8, "maxLength": 128 },
+    "event_time": { "type": "string", "format": "date-time" },
+    "session_id_hash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "content_id": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "event_type": {
+      "enum": [
+        "manifest_request",
+        "segment_start",
+        "segment_complete",
+        "bitrate_change",
+        "rebuffer_start",
+        "rebuffer_end",
+        "playback_end",
+        "error",
+        "UNKNOWN"
+      ]
+    },
+    "segment_sequence": { "type": "integer", "minimum": 0 },
+    "selected_bitrate_bps": { "type": "integer", "minimum": 0 },
+    "download_ms": { "type": "number", "minimum": 0 },
+    "buffer_ms": { "type": "number", "minimum": 0 },
+    "startup_ms": { "type": ["number", "null"], "minimum": 0 },
+    "rebuffer_ms": { "type": ["number", "null"], "minimum": 0 },
+    "error_code": { "type": ["string", "null"], "maxLength": 128 },
+    "trace_id": { "type": "string", "minLength": 1, "maxLength": 128 }
+  },
+  "additionalProperties": true
+}

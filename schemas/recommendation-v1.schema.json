@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/BitForLI/StreamPulse/schemas/recommendation-v1.schema.json",
+  "title": "StreamPulse RecommendationEvent v1",
+  "type": "object",
+  "$defs": {
+    "node_weights": {
+      "type": "object",
+      "minProperties": 1,
+      "maxProperties": 256,
+      "propertyNames": {
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+      },
+      "additionalProperties": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "recommendation_id",
+    "created_at",
+    "valid_until",
+    "mode",
+    "scope",
+    "action",
+    "current",
+    "proposed",
+    "evidence_window",
+    "reason_codes",
+    "expected",
+    "confidence",
+    "model_version"
+  ],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "recommendation_id": { "type": "string", "minLength": 8, "maxLength": 128 },
+    "created_at": { "type": "string", "format": "date-time" },
+    "valid_until": { "type": "string", "format": "date-time" },
+    "mode": { "const": "shadow" },
+    "scope": {
+      "type": "object",
+      "required": ["location", "network_id"],
+      "properties": {
+        "location": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9._-]{1,127}$"
+        },
+        "network_id": {
+          "type": "string",
+          "pattern": "^(as-synthetic-[A-Za-z0-9._-]+|anon:[0-9a-f]{16,64}|UNKNOWN)$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "action": {
+      "enum": ["adjust_node_weights", "prefetch_content", "no_op", "UNKNOWN"]
+    },
+    "current": { "$ref": "#/$defs/node_weights" },
+    "proposed": { "$ref": "#/$defs/node_weights" },
+    "evidence_window": { "type": "string", "pattern": "^[1-9][0-9]*[smhd]$" },
+    "reason_codes": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "uniqueItems": true,
+      "items": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{1,63}$" }
+    },
+    "expected": {
+      "type": "object",
+      "required": ["p95_ttfb_delta_ms", "error_rate_delta", "cost_units_delta"],
+      "properties": {
+        "p95_ttfb_delta_ms": { "type": "number" },
+        "error_rate_delta": { "type": "number", "minimum": -1, "maximum": 1 },
+        "cost_units_delta": { "type": "number" }
+      },
+      "additionalProperties": false
+    },
+    "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+    "model_version": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "revision": { "type": "integer", "minimum": 0 }
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "event_id": "evt-player-0001",
+  "event_time": "2026-08-27T09:30:02.900Z",
+  "session_id_hash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "content_id": "demo-live",
+  "event_type": "segment_complete"
+}

@@ -1,0 +1,102 @@
+name: streampulse
+
+# Day 1 overlay: preserve and include the pinned upstream operations playground.
+# StreamPulse services are added here in later stages without rewriting the
+# original Apache example before its runtime baseline has been captured.
+include:
+  - path:
+      - operations-playground/docker-compose.yaml
+      - experiments/reports/upstream-baseline/kafka-image-override.yaml
+
+services:
+  clickhouse:
+    image: clickhouse/clickhouse-server:26.7.3.19
+    depends_on:
+      kafka:
+        condition: service_healthy
+    environment:
+      CLICKHOUSE_DB: streampulse
+      CLICKHOUSE_USER: streampulse
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD:-streampulse-local}
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: "1"
+      GRAFANA_CH_PASSWORD: ${GRAFANA_CH_PASSWORD:-grafana-local}
+    ports:
+      - "8123:8123"
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+      - ./infra/clickhouse/init:/docker-entrypoint-initdb.d:ro
+      - ./infra/clickhouse/config/kafka.xml:/etc/clickhouse-server/config.d/kafka.xml:ro
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    healthcheck:
+      test: ["CMD-SHELL", "clickhouse-client --query 'SELECT 1' >/dev/null 2>&1"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+
+  grafana:
+    image: grafana/grafana:13.1.3
+    depends_on:
+      clickhouse:
+        condition: service_healthy
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_PLUGINS_PREINSTALL: grafana-clickhouse-datasource@4.20.0
+      GRAFANA_CH_PASSWORD: ${GRAFANA_CH_PASSWORD:-grafana-local}
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./infra/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+      - ./infra/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./infra/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - http://localhost:3000/api/health | grep -q ok"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+
+  recommendation-api:
+    build:
+      context: ./services/recommendation-api
+      args:
+        GO_VERSION: 1.26.5
+    depends_on:
+      kafka:
+        condition: service_healthy
+      clickhouse:
+        condition: service_healthy
+    environment:
+      HTTP_ADDR: ":8090"
+      CLICKHOUSE_URL: http://clickhouse:8123
+      CLICKHOUSE_USER: streampulse
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD:-streampulse-local}
+      CLICKHOUSE_TIMEOUT: 3s
+      KAFKA_BROKERS: kafka:9092
+      KAFKA_RECOMMENDATION_TOPIC: cdn.recommendations.v1
+      HISTORY_WINDOWS: "15"
+      MINIMUM_HISTORY_WINDOWS: "5"
+      MINIMUM_SAMPLES: "100"
+      METRICS_STALE_AFTER: 2m
+      RECOMMENDATION_TTL: 2m
+      MINIMUM_DWELL: 1m
+      MAXIMUM_WEIGHT_STEP: "0.20"
+      SATURATION_LIMIT: "0.85"
+    ports:
+      - "8090:8090"
+    healthcheck:
+      test: ["CMD", "/recommendation-api", "healthcheck"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+
+volumes:
+  clickhouse_data:
+  grafana_data:

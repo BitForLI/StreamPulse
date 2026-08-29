@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "event_id": "evt-routing-0002",
+  "event_time": "2026-08-27T09:30:00.100Z",
+  "request_id": "req-0002",
+  "candidate_nodes": ["edge-syd-a", "edge-syd-b", "edge-sin-a"],
+  "selected_node": "edge-syd-b",
+  "policy": "adaptive",
+  "quality_snapshot_age_ms": 1200,
+  "selected_weight": 0.65,
+  "fallback_level": 0,
+  "reason_codes": ["LOCAL_REGION", "HEALTHY", "CAPACITY_OK"],
+  "trace_id": "trace-routing-0002"
+}
