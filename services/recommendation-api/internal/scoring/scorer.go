@@ -12,12 +12,14 @@ import (
 var (
 	ErrInsufficientCandidates = errors.New("fewer than two eligible nodes")
 	ErrStaleMetrics           = errors.New("all candidate metrics are stale")
+	ErrFutureMetrics          = errors.New("all candidate metrics are from the future")
 	ErrNoMaterialBenefit      = errors.New("proposed weights do not clear the benefit margin")
 )
 
 type Config struct {
 	MinimumSamples    uint64
 	StaleAfter        time.Duration
+	FutureTolerance   time.Duration
 	SaturationLimit   float64
 	MaximumWeightStep float64
 	BenefitMargin     float64
@@ -49,7 +51,13 @@ func (s Scorer) Propose(
 ) (Result, error) {
 	eligible := make([]domain.NodeMetric, 0, len(metrics))
 	staleCount := 0
-	for _, metric := range latestByNode(metrics) {
+	futureCount := 0
+	latest := latestByNode(metrics)
+	for _, metric := range latest {
+		if metric.WindowEnd.After(now.Add(s.config.FutureTolerance)) {
+			futureCount++
+			continue
+		}
 		if now.Sub(metric.WindowEnd) > s.config.StaleAfter {
 			staleCount++
 			continue
@@ -60,7 +68,10 @@ func (s Scorer) Propose(
 		eligible = append(eligible, metric)
 	}
 	if len(eligible) < 2 {
-		if staleCount > 0 && staleCount == len(latestByNode(metrics)) {
+		if futureCount > 0 && futureCount == len(latest) {
+			return Result{}, ErrFutureMetrics
+		}
+		if staleCount > 0 && staleCount == len(latest) {
 			return Result{}, ErrStaleMetrics
 		}
 		return Result{}, ErrInsufficientCandidates

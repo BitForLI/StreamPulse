@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -22,6 +23,13 @@ func TestHistoryUsesClickHouseParametersAndParsesRows(t *testing.T) {
 		}
 		if got := request.URL.Query().Get("param_windows"); got != "15" {
 			t.Fatalf("windows parameter = %q", got)
+		}
+		query, err := io.ReadAll(request.Body)
+		if err != nil {
+			t.Fatalf("read query: %v", err)
+		}
+		if got := strings.Count(string(query), "now64(3) + INTERVAL 5 SECOND"); got != 2 {
+			t.Fatalf("future-window guard count = %d", got)
 		}
 		response.Header().Set("Content-Type", "application/json")
 		_, _ = response.Write([]byte(`{"data":[{"window_start":"2026-08-29 09:00:00.000","window_end":"2026-08-29 09:01:00.000","node_id":"edge-a","requests":500,"error_5xx_rate":0.01,"cache_hit_ratio":0.8,"origin_ms_total":1000,"ttfb_p50_ms":20,"ttfb_p95_ms":40,"ttfb_p99_ms":50,"saturation":0.6}]}`))

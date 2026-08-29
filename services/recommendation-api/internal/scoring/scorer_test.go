@@ -59,6 +59,18 @@ func TestStaleMetricsAreRejected(t *testing.T) {
 	}
 }
 
+func TestFutureMetricsAreRejected(t *testing.T) {
+	now := time.Date(2026, 8, 29, 9, 0, 0, 0, time.UTC)
+	metrics := []domain.NodeMetric{
+		nodeMetric(now.Add(time.Minute), "edge-a", 220, 0.12, 0.30, 0.70),
+		nodeMetric(now.Add(time.Minute), "edge-b", 45, 0.002, 0.82, 0.40),
+	}
+	_, err := New(testScorerConfig()).Propose(now, metrics, nil, nil)
+	if !errors.Is(err, ErrFutureMetrics) {
+		t.Fatalf("expected future metrics error, got %v", err)
+	}
+}
+
 func TestCapacityFilterKeepsAtLeastTwoCandidates(t *testing.T) {
 	now := time.Date(2026, 8, 29, 9, 0, 0, 0, time.UTC)
 	metrics := []domain.NodeMetric{
@@ -91,6 +103,7 @@ func testScorerConfig() Config {
 	return Config{
 		MinimumSamples:    100,
 		StaleAfter:        2 * time.Minute,
+		FutureTolerance:   5 * time.Second,
 		SaturationLimit:   0.85,
 		MaximumWeightStep: 0.20,
 		BenefitMargin:     0.0001,

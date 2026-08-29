@@ -51,15 +51,35 @@ Last updated: 2026-08-29 on Windows 11.
 - Recommendation API read-only smoke against the real local ClickHouse passed:
   liveness `ok`, readiness `ready`, three scope nodes returned, and the latest
   recovered normal window returned `generated=false` with `NO_ANOMALY`.
+- Fixed-threshold, combined-rule, and past-only EWMA/MAD detector comparison
+  completed across three independently seeded real Kafka -> Flink -> ClickHouse
+  runs. Each run saved 156 complete node-minute rows, a generator manifest,
+  SHA-256 identifiers, and raw per-window predictions.
+- Detector results were retained without selection: fixed and EWMA/MAD mean F1
+  were both `1.0`; the combined rule mean F1 was `0.136508`. All strategies had
+  zero false alerts/hour in this small synthetic dataset, and completed-window
+  P95 detection delay was 30 seconds where a fault was detected.
+- Detector evaluator tests pass, including compound Go-duration parsing,
+  manifest-ground-truth use, past-only EWMA/MAD history, raw evidence output,
+  and retention of a weak rule result.
+- Future-dated synthetic windows exposed a stale-data bypass boundary. The
+  ClickHouse history query now excludes metrics/events over five seconds ahead
+  of server time, and the scorer independently rejects an all-future set. A
+  direct read showed unguarded latest `2026-09-01 00:13:00` versus guarded
+  latest `2026-08-28 00:07:00` at server time `2026-08-29 11:16:19`; repository
+  and scorer regression tests pass.
+- Controlled ClickHouse pause/catch-up passed without truncating tables:
+  ClickHouse consumer lag reached `6,134` while stopped and returned to zero
+  `20.373` seconds after restart. The isolated range changed from zero rows to
+  2,572 delivery, 2,582 routing, 645 player, 12 node-minute, and 4
+  network-minute rows; ClickHouse returned healthy after the run.
 
 ## Not yet passed
 
 - Checkpoint restore, duplicate behavior across restart, idle partition, and
   watermark/allowed-lateness integration tests.
-- ClickHouse pause/materialized-view catch-up (scenario implemented but not yet
-  executed), injected-fault recommendation publication through Kafka,
-  recommendation ack/outcome durability, model comparison, and EdgeRoute
-  shadow integration.
+- Injected-fault recommendation publication through Kafka, recommendation
+  ack/outcome durability, and EdgeRoute shadow integration.
 
 The upstream runtime pass does not substitute for the remaining StreamPulse
 integration gates.

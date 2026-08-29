@@ -1,0 +1,32 @@
+{
+    "generated_at_utc":  "2026-08-29T11:23:50.1190067Z",
+    "scenario":  "experiments/scenarios/clickhouse-catchup.yaml",
+    "manifest":  "experiments/results/clickhouse-catchup/manifest.json",
+    "seed":  20260904,
+    "simulation_start_utc":  "2026-09-03T00:00:00Z",
+    "clickhouse_pause_seconds":  26.472,
+    "clickhouse_unavailable_seconds":  29.579,
+    "catchup_after_restart_seconds":  20.373,
+    "total_stop_to_caught_up_seconds":  46.845,
+    "observed_lag_while_paused":  6134,
+    "final_clickhouse_lag":  0,
+    "rows_before":  {
+                        "delivery":  0,
+                        "routing":  0,
+                        "player":  0,
+                        "node_metrics":  0,
+                        "network_metrics":  0
+                    },
+    "rows_after":  {
+                       "delivery":  2572,
+                       "routing":  2582,
+                       "player":  645,
+                       "node_metrics":  12,
+                       "network_metrics":  4
+                   },
+    "limitations":  [
+                        "Local synthetic run only.",
+                        "Kafka lag reaching zero proves consumer catch-up, not production recovery capacity.",
+                        "No ClickHouse data was deleted or tables truncated."
+                    ]
+}

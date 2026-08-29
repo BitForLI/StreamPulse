@@ -19,9 +19,10 @@ value, and explicit duplicate/schema-error annotations. All values are
 synthetic.
 
 For stale-data-sensitive recommendation experiments, pass an explicit RFC3339
-`-start-time`. This overrides only the scenario start, is validated, and is
-recorded in the manifest; the seed and all relative fault windows remain
-reproducible. The API clock is never altered to make stale data appear fresh.
+`-start-time`. Repeated experiments may also pass an integer `-seed`. Both
+overrides are validated and recorded in the manifest; all relative fault
+windows remain reproducible. The API clock is never altered to make stale data
+appear fresh.
 
 The Kafka sink keeps a bounded 500-record buffer, writes each batch
 synchronously with `RequireAll`, and flushes the final partial batch on close.

@@ -38,8 +38,10 @@ Example evaluation body:
 Normal scopes return `generated: false` with `NO_ANOMALY`. Dependency failures
 return 503 and never publish. Generated events always use `mode=shadow`, a
 two-minute TTL, a deterministic evidence-window ID, and a maximum absolute
-per-node step of 0.20. At least two non-stale, healthy, unsaturated nodes must
-remain, and recommendations observe a one-minute minimum dwell time.
+per-node step of 0.20. At least two non-stale, non-future, healthy, unsaturated
+nodes must remain, and recommendations observe a one-minute minimum dwell time.
+ClickHouse excludes windows more than five seconds ahead of server time, and
+the scorer independently rejects an all-future candidate set.
 
 Acknowledgements and outcomes are currently retained in the process-local
 audit store; recommendation events themselves are durable through Kafka and

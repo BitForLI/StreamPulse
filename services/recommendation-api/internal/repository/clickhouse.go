@@ -66,6 +66,7 @@ WITH recent AS
            cache_hit_ratio, origin_ms_total, ttfb_p50_ms, ttfb_p95_ms, ttfb_p99_ms
     FROM streampulse.node_metrics_1m FINAL
     WHERE location = {location:String} AND network_id = {network:String}
+      AND window_end <= now64(3) + INTERVAL 5 SECOND
     ORDER BY window_start DESC
     LIMIT {windows:UInt32} BY node_id
 ), saturation_by_node AS
@@ -75,6 +76,7 @@ WITH recent AS
     FROM streampulse.raw_delivery FINAL
     WHERE location = {location:String} AND network_id = {network:String}
       AND event_time >= (SELECT min(window_start) FROM recent)
+      AND event_time <= now64(3) + INTERVAL 5 SECOND
     GROUP BY node_id
 )
 SELECT recent.window_start, recent.window_end, recent.node_id, recent.requests,

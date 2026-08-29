@@ -22,7 +22,7 @@ HTTP handler
      -> parameterized ClickHouse repository
      -> fixed rule + past-window EWMA/median/MAD
      -> normalized multi-objective node scorer
-     -> stale/capacity/candidate/step/TTL/dwell guardrails
+     -> stale/future/capacity/candidate/step/TTL/dwell guardrails
      -> synchronous Kafka publisher
 ```
 
@@ -38,7 +38,7 @@ deltas.
 - Flink checkpoints state; replay and duplicate delivery are expected.
 - A dead-letter topic isolates malformed records without leaking raw payloads.
 - ClickHouse is not placed in the DNS request path.
-- Missing or stale analytics data produces no unsafe routing mutation.
+- Missing, stale, or future-dated analytics data produces no unsafe routing mutation.
 
 ## Reused versus implemented
 

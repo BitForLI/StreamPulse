@@ -16,7 +16,9 @@ Day 1 contracts, the Day 2 deterministic generator, the Day 3 core Flink
 analytics job, and the Day 4 ClickHouse/Grafana path are implemented and
 broker-integrated. Day 5 recommendation API source, explainable detectors,
 scorer, and guardrails are implemented and locally tested; their fault-to-Kafka
-runtime gate remains pending. The
+runtime gate remains pending. Day 6 detector comparison is complete across
+three independently seeded Kafka/Flink/ClickHouse runs, and the ClickHouse
+pause/catch-up gate passed; restart correctness gates are still open. The
 repository contains four v1 event schemas, compatibility/privacy enforcement,
 topic design, fixed-seed CDN fault scenarios, Kafka and JSONL sinks, manifest
 generation, event-time/watermark handling, deduplication, DLQ/late outputs, and
@@ -63,7 +65,7 @@ EdgeRoute integration remains an explicit later-stage contract.
 
 The recommendation API follows `HTTP handler -> use case -> query repository ->
 detector/scorer -> guardrail -> Kafka publisher`. It combines a fixed rule with
-past-window EWMA and rolling median/MAD evidence, filters stale/unhealthy/
+past-window EWMA and rolling median/MAD evidence, rejects stale/future/unhealthy/
 capacity-constrained nodes, preserves at least two candidates, limits each
 absolute weight step to 0.20, enforces a one-minute dwell, and emits only
 two-minute `mode=shadow` events. Current code and endpoint semantics are in
@@ -159,16 +161,44 @@ query baselines record cold latency, 20-iteration hot P50/P95, rows, and bytes
 in the Day 4 report. These are local synthetic measurements, not production
 throughput claims.
 
+A controlled Day 6 pause/catch-up run stopped ClickHouse before publishing a
+2,600-request workload. ClickHouse consumer lag reached `6,134` while paused
+and returned to `0` within `20.373` seconds of restart; target tables contained
+2,572 delivery, 2,582 routing, 645 player, 12 node, and 4 network rows in the
+isolated event-time range. No table was truncated or data deleted. See
+[`experiments/results/clickhouse-catchup/report.md`](experiments/results/clickhouse-catchup/report.md).
+
+## Detector comparison gate
+
+The fixed-threshold, combined-rule, and past-only EWMA/MAD strategies were
+compared across three seeds. Each run preserved its generator manifest, 156
+complete node-minute rows, raw per-window predictions, configuration and file
+hashes. Fixed threshold and EWMA/MAD both produced mean F1 `1.0` with a
+completed-window P95 detection delay of 30 seconds; the stricter combined rule
+produced mean F1 `0.136508` because it required simultaneous latency and error
+evidence. This synthetic result is a tie, not evidence that EWMA/MAD is better
+than fixed thresholds or that either generalizes to production traffic.
+
+```powershell
+make detector-test
+make detector-e2e
+```
+
+The end-to-end command requires the running root Compose stack and refuses to
+overwrite an existing completed report. See
+[`experiments/results/detector-comparison/report.md`](experiments/results/detector-comparison/report.md)
+and its machine-readable `summary.json`.
+
 ## Repository map
 
 - `schemas/` — versioned Delivery, Routing, Player, and Recommendation schemas.
 - `contracts/` — topics, field semantics, compatibility, and privacy rules.
-- `tests/schema/` — schema, semantic, compatibility, and privacy tests.
+- `tests/schema/` and `tests/experiments/` — contract and detector-evaluation tests.
 - `operations-playground/` and `docker/` — preserved Apache upstream runtime.
 - `infra/clickhouse/` and `infra/grafana/` — version-pinned storage and dashboard provisioning.
 - `services/recommendation-api/` — Go query, detection, scoring, guardrail, and shadow-publish service.
 - `docs/` — architecture and exact upstream provenance/verification status.
-- `experiments/` — reproducible evidence; raw large outputs are not committed.
+- `experiments/` — reproducible scenarios, aggregate raw evidence, manifests, predictions and reports; large raw event streams remain uncommitted.
 
 ## Scope and limitations
 
@@ -180,7 +210,7 @@ throughput claims.
   Recommendation API code is locally tested, but its injected-fault-to-Kafka
   container integration is not yet claimed complete. Model comparison,
   EdgeRoute shadow integration, and StreamPulse-specific runtime failure
-  experiments are subsequent stages. Checkpoint restore, ClickHouse
-  pause/catch-up, and restart aggregate comparison remain unverified.
+  experiments are subsequent stages. Checkpoint restore and restart aggregate
+  comparison remain unverified.
 
 See [`THIRD_PARTY.md`](THIRD_PARTY.md) for provenance and license boundaries.

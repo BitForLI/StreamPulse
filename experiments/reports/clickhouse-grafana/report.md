@@ -68,9 +68,11 @@ HTTP client overhead, and the OS page cache is not forcibly cleared.
 Raw evidence is in `query-benchmark.json`; the executable benchmark is
 `scripts/benchmark-clickhouse.ps1`.
 
-## Remaining failure gate
+## Pause and catch-up gate
 
-The ClickHouse pause/materialized-view catch-up scenario is implemented as
-`experiments/scenarios/clickhouse-catchup.yaml`, but it has not been executed.
-The local Docker approval was rejected before `docker compose stop clickhouse`
-ran, so no catch-up time is claimed.
+The later controlled run stopped ClickHouse before sending the isolated
+fixed-seed workload. ClickHouse consumer lag reached 6,134 while stopped and
+returned to zero 20.373 seconds after restart. All five checked target tables
+received rows without deleting or truncating existing data. Raw lag snapshots,
+manifest, counts, timing and limitations are preserved under
+`experiments/results/clickhouse-catchup/`.

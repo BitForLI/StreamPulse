@@ -39,6 +39,7 @@ func main() {
 	scorerConfig := scoring.Config{
 		MinimumSamples:    uint64(envInt("MINIMUM_SAMPLES", 100)),
 		StaleAfter:        envDuration("METRICS_STALE_AFTER", 2*time.Minute),
+		FutureTolerance:   envDuration("METRICS_FUTURE_TOLERANCE", 5*time.Second),
 		SaturationLimit:   envFloat("SATURATION_LIMIT", 0.85),
 		MaximumWeightStep: envFloat("MAXIMUM_WEIGHT_STEP", 0.20),
 		BenefitMargin:     envFloat("BENEFIT_MARGIN", 0.0001),

@@ -1,4 +1,4 @@
-.PHONY: contract-test generator-test generator-smoke analytics-test recommendation-test recommendation-e2e compose-config upstream-up upstream-down topics clickhouse-benchmark
+.PHONY: contract-test generator-test generator-smoke analytics-test recommendation-test recommendation-e2e detector-test detector-e2e clickhouse-catchup-test compose-config upstream-up upstream-down topics clickhouse-benchmark
 
 contract-test:
 	python -m unittest discover -s tests/schema -v
@@ -18,6 +18,15 @@ recommendation-test:
 
 recommendation-e2e:
 	powershell -NoProfile -ExecutionPolicy Bypass -File scripts/recommendation-e2e.ps1
+
+detector-test:
+	python -m unittest discover -s tests/experiments -v
+
+detector-e2e:
+	powershell -NoProfile -ExecutionPolicy Bypass -File scripts/run-detector-comparison.ps1
+
+clickhouse-catchup-test:
+	powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-clickhouse-catchup.ps1
 
 compose-config:
 	docker compose -f compose.yaml config

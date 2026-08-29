@@ -162,6 +162,8 @@ func (s *Service) Evaluate(ctx context.Context, request domain.EvaluationRequest
 		switch {
 		case errors.Is(err, scoring.ErrStaleMetrics):
 			return domain.EvaluationResult{Generated: false, ReasonCodes: []string{"STALE_METRICS"}}, nil
+		case errors.Is(err, scoring.ErrFutureMetrics):
+			return domain.EvaluationResult{Generated: false, ReasonCodes: []string{"FUTURE_METRICS"}}, nil
 		case errors.Is(err, scoring.ErrInsufficientCandidates):
 			return domain.EvaluationResult{Generated: false, ReasonCodes: []string{"INSUFFICIENT_HEALTHY_CANDIDATES"}}, nil
 		case errors.Is(err, scoring.ErrNoMaterialBenefit):

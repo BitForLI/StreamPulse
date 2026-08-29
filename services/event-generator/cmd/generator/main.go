@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
+	"strconv"
 	"syscall"
 
 	"github.com/BitForLI/StreamPulse/services/event-generator/internal/config"
@@ -23,12 +24,22 @@ func main() {
 	manifestPath := flag.String("manifest", "run-manifest.json", "generated run manifest")
 	gitCommit := flag.String("git-commit", envOr("GIT_COMMIT", "uncommitted-or-unknown"), "source revision")
 	startTime := flag.String("start-time", "", "optional RFC3339 simulation start override; recorded in the manifest")
+	seed := flag.String("seed", "", "optional integer seed override; recorded in the manifest")
 	flag.Parse()
 
 	cfg, _, err := config.Load(*configPath)
 	check(err)
+	overridden := false
 	if *startTime != "" {
 		cfg.StartTime = *startTime
+		overridden = true
+	}
+	if *seed != "" {
+		cfg.Seed, err = strconv.ParseInt(*seed, 10, 64)
+		check(err)
+		overridden = true
+	}
+	if overridden {
 		check(cfg.Validate())
 	}
 	generator, err := scenario.New(cfg)
