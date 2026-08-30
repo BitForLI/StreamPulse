@@ -67,7 +67,6 @@ shadow 路由权重建议，最后通过 Grafana 和可审计 API 展示结果�
 - Prometheus 全套指标、告警和生产级容量测试。
 - 多 broker、多 TaskManager、多地区云部署、rescale/savepoint 升级流程。
 - narrated five-minute screen recording。
-- `v0.1.0` release。
 
 ### 3.3 明确没有做、不能在简历中声称
 
@@ -1051,7 +1050,7 @@ real EdgeRoute shadow adapter、canary/A-B、capacity and cost calibration。
 6. 只有在 baseline、时间切分、特征/模型 hash 和 held-out evaluation 完整后才增加
    Isolation Forest。
 7. 多 broker/TaskManager、backpressure、rescale/savepoint 和持续负载 capacity matrix。
-8. 用户需要正式版本时再创建 `v0.1.0` release。
+8. 后续功能形成新的稳定里程碑且用户明确要求时，再发布下一版本。
 
 ## 26. 关键证据文件索引
 

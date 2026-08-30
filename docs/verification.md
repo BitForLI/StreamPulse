@@ -122,14 +122,15 @@ Last updated: 2026-08-30 on Windows 11.
   Maven/Flink test suite, and Docker Compose configuration validation. The two
   preceding failed runs are retained as evidence of fixes for the pip cache
   dependency path and the undeclared `PyYAML` test dependency.
+- GitHub Release `v0.1.0` was published from commit `319b71a`, whose hosted CI
+  run `33289386824` passed. The release is public, marked latest, and is neither
+  a draft nor a prerelease.
 
 ## Not yet passed
 
 - EdgeRoute shadow adapter consumption remains a separate cross-project gate.
 - A narrated five-minute recording has not yet been produced; the static
   dashboard screenshot and executable demo path are verified locally.
-- A `v0.1.0` release has not been created; release publication is intentionally
-  separate from the completed fork, push, and CI verification.
 
 The upstream runtime pass does not substitute for the remaining StreamPulse
 integration gates.
