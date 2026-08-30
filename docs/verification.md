@@ -117,15 +117,19 @@ Last updated: 2026-08-30 on Windows 11.
   persisted three-node evidence plus one acknowledgement/outcome, cancelled the
   isolated demo job, and restored the upstream ClickCount job. The main
   StreamPulse job remained RUNNING 6/6 and the API returned live/ready.
+- GitHub-hosted CI run `33289296683` passed on commit `8ae9362`. It executed
+  Python schema and detector tests, both Go service test suites, Go vet, the
+  Maven/Flink test suite, and Docker Compose configuration validation. The two
+  preceding failed runs are retained as evidence of fixes for the pip cache
+  dependency path and the undeclared `PyYAML` test dependency.
 
 ## Not yet passed
 
 - EdgeRoute shadow adapter consumption remains a separate cross-project gate.
 - A narrated five-minute recording has not yet been produced; the static
   dashboard screenshot and executable demo path are verified locally.
-- The workflow has been parsed and its component commands pass locally, but no
-  GitHub-hosted CI run or `v0.1.0` release exists until the remote fork is fixed
-  and the user explicitly requests commit/push/release operations.
+- A `v0.1.0` release has not been created; release publication is intentionally
+  separate from the completed fork, push, and CI verification.
 
 The upstream runtime pass does not substitute for the remaining StreamPulse
 integration gates.

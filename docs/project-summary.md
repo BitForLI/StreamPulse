@@ -55,7 +55,7 @@ shadow 路由权重建议，最后通过 Grafana 和可审计 API 展示结果�
 - ClickHouse pause/catch-up、Flink TaskManager checkpoint recovery、exact replay、
   idle partition、allowed-late revision、too-late DLQ 等可靠性实验。
 - 三个独立 seed 的 detector comparison。
-- 本地 CI 组成命令、五分钟自动 demo 脚本、文档、实验报告和简历证据草稿。
+- 本地与 GitHub-hosted CI、五分钟自动 demo 脚本、文档、实验报告和简历证据草稿。
 
 ### 3.2 已设计或保留 contract，但尚未实现
 
@@ -67,7 +67,7 @@ shadow 路由权重建议，最后通过 Grafana 和可审计 API 展示结果�
 - Prometheus 全套指标、告警和生产级容量测试。
 - 多 broker、多 TaskManager、多地区云部署、rescale/savepoint 升级流程。
 - narrated five-minute screen recording。
-- GitHub-hosted CI 结果和 `v0.1.0` release。
+- `v0.1.0` release。
 
 ### 3.3 明确没有做、不能在简历中声称
 
@@ -756,8 +756,10 @@ schema-error annotations 可能重叠；报告只声称 application-level replac
 ### 18.3 GitHub Actions workflow
 
 Workflow 已定义 checkout、Python 3.12、Go 1.23.x、Temurin 17、Maven tests、Go tests/vet、
-Python tests 和 Compose config。组件命令已本地通过，但仓库尚未完成正确 fork/push，
-所以不能声称 GitHub-hosted CI 已通过。
+Python tests 和 Compose config。仓库已重建为 `apache/flink-playgrounds` 的真实 fork，
+默认分支为 `main`。GitHub-hosted CI run `33289296683` 在提交 `8ae9362` 上通过；首两轮
+失败也保留在 Actions 历史中，并分别暴露、修复了 pip cache dependency path 和遗漏的
+`PyYAML` 测试依赖。
 
 ## 19. 主要工程决策与取舍
 
@@ -1040,17 +1042,16 @@ real EdgeRoute shadow adapter、canary/A-B、capacity and cost calibration。
 
 按优先级：
 
-1. 修复 GitHub repository 的 upstream fork identity，设置 `origin` 并 push 当前 branch。
-2. 运行 GitHub-hosted CI，修复平台差异后再发布 `v0.1.0`。
-3. 录制 narrated five-minute demo。
-4. EdgeRoute 实现 shadow adapter：验证 schema/TTL/candidates，再比较 real vs shadow choice，
+1. 录制 narrated five-minute demo。
+2. EdgeRoute 实现 shadow adapter：验证 schema/TTL/candidates，再比较 real vs shadow choice，
    仍不应用权重。
-5. 接入 Vector + NGINX/EdgeRoute synthetic JSON logs，比较 schema coverage。
-6. 实现 PlayerEvent session join 和真实 player QoE aggregate。
-7. hot-content prefetch recommendation 和 useful-prefetch/waste/origin amplification 实验。
-8. 只有在 baseline、时间切分、特征/模型 hash 和 held-out evaluation 完整后才增加
+3. 接入 Vector + NGINX/EdgeRoute synthetic JSON logs，比较 schema coverage。
+4. 实现 PlayerEvent session join 和真实 player QoE aggregate。
+5. hot-content prefetch recommendation 和 useful-prefetch/waste/origin amplification 实验。
+6. 只有在 baseline、时间切分、特征/模型 hash 和 held-out evaluation 完整后才增加
    Isolation Forest。
-9. 多 broker/TaskManager、backpressure、rescale/savepoint 和持续负载 capacity matrix。
+7. 多 broker/TaskManager、backpressure、rescale/savepoint 和持续负载 capacity matrix。
+8. 用户需要正式版本时再创建 `v0.1.0` release。
 
 ## 26. 关键证据文件索引
 
