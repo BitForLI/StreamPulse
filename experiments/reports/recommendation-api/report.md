@@ -1,33 +1,32 @@
-# Recommendation API verification report
+# Recommendation API end-to-end report
 
-## Passed locally
+Measured at `2026-08-29T12:54:16Z` on the local Docker Compose stack.
 
-- Go module checksums verified; all packages pass `go test ./...` and `go vet ./...`.
-- Rule baseline requires minimum samples plus both elevated error rate and P95
-  above twice the peer median.
-- EWMA/MAD uses only past windows, freezes large historical outliers, handles
-  MAD=0, and explains latency/error/cache-miss signals separately.
-- Normal histories do not emit signals or publish recommendations.
-- Scoring filters stale, unhealthy, low-sample, and saturated nodes; at least
-  two candidates must remain.
-- Progressive interpolation preserves a weight sum of one while limiting every
-  node to an absolute 0.20 step.
-- Application tests verify two-minute TTL, one-minute dwell, deterministic ID,
-  audit fields, publish-before-dwell ordering, and 503 dependency behavior.
-- ClickHouse repository tests verify typed response parsing and parameter
-  binding rather than string interpolation.
-- Real local ClickHouse read smoke returned `health=ok`, `ready=ready`, three
-  nodes for the tested scope, and `NO_ANOMALY` for the latest recovered normal
-  window.
+## Result
 
-## Pending container gate
+- Isolated Flink job: `54e1e61d745eac06f76969ca9077df60`
+- Consumer group: `streampulse-recommendation-e2e-v1`
+- Starting offsets: `latest`
+- Kafka recommendation total offset: `2 -> 3`
+- Recommendation ID: `rec-b4861107ffbf3c4cef004a0d`
+- Contract/mode: schema v1 / `shadow`
+- TTL: 120 seconds
+- Maximum absolute node weight step: 0.20
+- ClickHouse audit evidence: 3 node records, input window, query version, config hash
+- Durable acknowledgement rows for this ID: 1
+- Durable outcome rows for this ID: 1
 
-`scripts/recommendation-e2e.ps1` builds the container and Linux generator, runs
-the final-window fault scenario with a manifest-recorded current start-time
-override, evaluates the scope, verifies shadow mode/TTL/weight step, and waits
-for the exact recommendation ID to reach ClickHouse. It has not run because the
-Docker action approval was unavailable. No fault-detection precision or runtime
-publication claim is made yet.
+The fault combined elevated latency and 5xx rate on `edge-syd-a`. The rule,
+EWMA error-rate, and EWMA/MAD latency detectors all fired. The proposed weights
+reduced `edge-syd-a` from 0.3333 to 0.1988 and raised `edge-syd-b` from 0.3333 to
+0.5333 while preserving three eligible nodes.
 
-Acknowledgement and outcome endpoints currently use a process-local audit store;
-durable ack/outcome tables remain a hardening item.
+## Boundaries
+
+The generator uses synthetic locations, networks, nodes, and traffic. Expected
+QoE/cost deltas are model estimates, not observed production savings. The saved
+outcome contains zero deltas and explicitly states that it is only a persistence
+check; it is not causal evidence. The test never applies weights to EdgeRoute.
+
+Machine-readable evidence and the exact generator manifest are stored beside
+this report in `e2e-result.json` and `fault-manifest.json`.

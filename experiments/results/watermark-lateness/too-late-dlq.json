@@ -1,0 +1,1 @@
+﻿{"source_topic":"cdn.delivery.watermark-test.20260829130519.v1","observed_at":"2026-08-29T13:06:45.596130Z","error_code":"TOO_LATE","error_message":"event exceeded watermark and allowed lateness","payload_sha256":"54a0db155b7c912e3198291ece652cb193e2c3d7c12bf730f03c6b04dc65edb6","payload_preview_redacted":"redacted:event_id=delivery-1e1deba21ba0a8c011c36e0d"}

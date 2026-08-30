@@ -43,10 +43,11 @@ nodes must remain, and recommendations observe a one-minute minimum dwell time.
 ClickHouse excludes windows more than five seconds ahead of server time, and
 the scorer independently rejects an all-future candidate set.
 
-Acknowledgements and outcomes are currently retained in the process-local
-audit store; recommendation events themselves are durable through Kafka and
-ClickHouse. Durable ack/outcome persistence is a documented later hardening
-item.
+Recommendation events are durable through Kafka and ClickHouse, including the
+input window, query/config versions, reason codes, and per-node evidence.
+Acknowledgements and outcomes are written to dedicated ClickHouse tables and
+therefore survive API restarts. Expected and observed deltas remain separate;
+an outcome must not be treated as causal evidence without a controlled test.
 
 ## Test
 

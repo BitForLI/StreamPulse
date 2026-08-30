@@ -1,0 +1,325 @@
+{
+    "counts":  {
+                   "restored":  6,
+                   "total":  16,
+                   "in_progress":  0,
+                   "completed":  16,
+                   "failed":  0
+               },
+    "summary":  {
+                    "checkpointed_size":  {
+                                              "min":  2306640,
+                                              "max":  7999960,
+                                              "avg":  7552977,
+                                              "p50":  7875245.0,
+                                              "p90":  7999293.6,
+                                              "p95":  7999960.0,
+                                              "p99":  7999960.0,
+                                              "p999":  7999960.0
+                                          },
+                    "state_size":  {
+                                       "min":  2306640,
+                                       "max":  7999960,
+                                       "avg":  7552977,
+                                       "p50":  7875245.0,
+                                       "p90":  7999293.6,
+                                       "p95":  7999960.0,
+                                       "p99":  7999960.0,
+                                       "p999":  7999960.0
+                                   },
+                    "end_to_end_duration":  {
+                                                "min":  61,
+                                                "max":  540,
+                                                "avg":  103,
+                                                "p50":  68.0,
+                                                "p90":  280.3000000000003,
+                                                "p95":  540.0,
+                                                "p99":  540.0,
+                                                "p999":  540.0
+                                            },
+                    "alignment_buffered":  {
+                                               "min":  0,
+                                               "max":  0,
+                                               "avg":  0,
+                                               "p50":  0.0,
+                                               "p90":  0.0,
+                                               "p95":  0.0,
+                                               "p99":  0.0,
+                                               "p999":  0.0
+                                           },
+                    "processed_data":  {
+                                           "min":  0,
+                                           "max":  30782,
+                                           "avg":  1923,
+                                           "p50":  0.0,
+                                           "p90":  9234.600000000022,
+                                           "p95":  30782.0,
+                                           "p99":  30782.0,
+                                           "p999":  30782.0
+                                       },
+                    "persisted_data":  {
+                                           "min":  0,
+                                           "max":  0,
+                                           "avg":  0,
+                                           "p50":  0.0,
+                                           "p90":  0.0,
+                                           "p95":  0.0,
+                                           "p99":  0.0,
+                                           "p999":  0.0
+                                       }
+                },
+    "latest":  {
+                   "completed":  {
+                                     "className":  "completed",
+                                     "id":  16,
+                                     "status":  "COMPLETED",
+                                     "is_savepoint":  false,
+                                     "trigger_timestamp":  1788006484114,
+                                     "latest_ack_timestamp":  1788006484283,
+                                     "checkpointed_size":  7999960,
+                                     "state_size":  7999960,
+                                     "end_to_end_duration":  169,
+                                     "alignment_buffered":  0,
+                                     "processed_data":  0,
+                                     "persisted_data":  0,
+                                     "num_subtasks":  6,
+                                     "num_acknowledged_subtasks":  6,
+                                     "checkpoint_type":  "CHECKPOINT",
+                                     "tasks":  {
+
+                                               },
+                                     "external_path":  "file:/tmp/flink-checkpoints-directory/344360c66b87dc6e5ceba0a5bdf84b71/chk-16",
+                                     "discarded":  false
+                                 },
+                   "savepoint":  null,
+                   "failed":  null,
+                   "restored":  {
+                                    "id":  15,
+                                    "restore_timestamp":  1788006476641,
+                                    "is_savepoint":  false,
+                                    "external_path":  "file:/tmp/flink-checkpoints-directory/344360c66b87dc6e5ceba0a5bdf84b71/chk-15"
+                                }
+               },
+    "history":  [
+                    {
+                        "className":  "completed",
+                        "id":  16,
+                        "status":  "COMPLETED",
+                        "is_savepoint":  false,
+                        "trigger_timestamp":  1788006484114,
+                        "latest_ack_timestamp":  1788006484283,
+                        "checkpointed_size":  7999960,
+                        "state_size":  7999960,
+                        "end_to_end_duration":  169,
+                        "alignment_buffered":  0,
+                        "processed_data":  0,
+                        "persisted_data":  0,
+                        "num_subtasks":  6,
+                        "num_acknowledged_subtasks":  6,
+                        "checkpoint_type":  "CHECKPOINT",
+                        "tasks":  {
+
+                                  },
+                        "external_path":  "file:/tmp/flink-checkpoints-directory/344360c66b87dc6e5ceba0a5bdf84b71/chk-16",
+                        "discarded":  false
+                    },
+                    {
+                        "className":  "completed",
+                        "id":  15,
+                        "status":  "COMPLETED",
+                        "is_savepoint":  false,
+                        "trigger_timestamp":  1788006443299,
+                        "latest_ack_timestamp":  1788006443372,
+                        "checkpointed_size":  7999008,
+                        "state_size":  7999008,
+                        "end_to_end_duration":  73,
+                        "alignment_buffered":  0,
+                        "processed_data":  0,
+                        "persisted_data":  0,
+                        "num_subtasks":  6,
+                        "num_acknowledged_subtasks":  6,
+                        "checkpoint_type":  "CHECKPOINT",
+                        "tasks":  {
+
+                                  },
+                        "external_path":  "file:/tmp/flink-checkpoints-directory/344360c66b87dc6e5ceba0a5bdf84b71/chk-15",
+                        "discarded":  true
+                    },
+                    {
+                        "className":  "completed",
+                        "id":  14,
+                        "status":  "COMPLETED",
+                        "is_savepoint":  false,
+                        "trigger_timestamp":  1788006433302,
+                        "latest_ack_timestamp":  1788006433380,
+                        "checkpointed_size":  7999008,
+                        "state_size":  7999008,
+                        "end_to_end_duration":  78,
+                        "alignment_buffered":  0,
+                        "processed_data":  0,
+                        "persisted_data":  0,
+                        "num_subtasks":  6,
+                        "num_acknowledged_subtasks":  6,
+                        "checkpoint_type":  "CHECKPOINT",
+                        "tasks":  {
+
+                                  },
+                        "external_path":  "file:/tmp/flink-checkpoints-directory/344360c66b87dc6e5ceba0a5bdf84b71/chk-14",
+                        "discarded":  true
+                    },
+                    {
+                        "className":  "completed",
+                        "id":  13,
+                        "status":  "COMPLETED",
+                        "is_savepoint":  false,
+                        "trigger_timestamp":  1788006423302,
+                        "latest_ack_timestamp":  1788006423374,
+                        "checkpointed_size":  7915322,
+                        "state_size":  7915322,
+                        "end_to_end_duration":  72,
+                        "alignment_buffered":  0,
+                        "processed_data":  0,
+                        "persisted_data":  0,
+                        "num_subtasks":  6,
+                        "num_acknowledged_subtasks":  6,
+                        "checkpoint_type":  "CHECKPOINT",
+                        "tasks":  {
+
+                                  },
+                        "external_path":  "file:/tmp/flink-checkpoints-directory/344360c66b87dc6e5ceba0a5bdf84b71/chk-13",
+                        "discarded":  true
+                    },
+                    {
+                        "className":  "completed",
+                        "id":  12,
+                        "status":  "COMPLETED",
+                        "is_savepoint":  false,
+                        "trigger_timestamp":  1788006413302,
+                        "latest_ack_timestamp":  1788006413370,
+                        "checkpointed_size":  7875245,
+                        "state_size":  7875245,
+                        "end_to_end_duration":  68,
+                        "alignment_buffered":  0,
+                        "processed_data":  0,
+                        "persisted_data":  0,
+                        "num_subtasks":  6,
+                        "num_acknowledged_subtasks":  6,
+                        "checkpoint_type":  "CHECKPOINT",
+                        "tasks":  {
+
+                                  },
+                        "external_path":  "file:/tmp/flink-checkpoints-directory/344360c66b87dc6e5ceba0a5bdf84b71/chk-12",
+                        "discarded":  true
+                    },
+                    {
+                        "className":  "completed",
+                        "id":  11,
+                        "status":  "COMPLETED",
+                        "is_savepoint":  false,
+                        "trigger_timestamp":  1788006403305,
+                        "latest_ack_timestamp":  1788006403368,
+                        "checkpointed_size":  7875245,
+                        "state_size":  7875245,
+                        "end_to_end_duration":  63,
+                        "alignment_buffered":  0,
+                        "processed_data":  0,
+                        "persisted_data":  0,
+                        "num_subtasks":  6,
+                        "num_acknowledged_subtasks":  6,
+                        "checkpoint_type":  "CHECKPOINT",
+                        "tasks":  {
+
+                                  },
+                        "external_path":  "file:/tmp/flink-checkpoints-directory/344360c66b87dc6e5ceba0a5bdf84b71/chk-11",
+                        "discarded":  true
+                    },
+                    {
+                        "className":  "completed",
+                        "id":  10,
+                        "status":  "COMPLETED",
+                        "is_savepoint":  false,
+                        "trigger_timestamp":  1788006393305,
+                        "latest_ack_timestamp":  1788006393372,
+                        "checkpointed_size":  7875245,
+                        "state_size":  7875245,
+                        "end_to_end_duration":  67,
+                        "alignment_buffered":  0,
+                        "processed_data":  0,
+                        "persisted_data":  0,
+                        "num_subtasks":  6,
+                        "num_acknowledged_subtasks":  6,
+                        "checkpoint_type":  "CHECKPOINT",
+                        "tasks":  {
+
+                                  },
+                        "external_path":  "file:/tmp/flink-checkpoints-directory/344360c66b87dc6e5ceba0a5bdf84b71/chk-10",
+                        "discarded":  true
+                    },
+                    {
+                        "className":  "completed",
+                        "id":  9,
+                        "status":  "COMPLETED",
+                        "is_savepoint":  false,
+                        "trigger_timestamp":  1788006383305,
+                        "latest_ack_timestamp":  1788006383370,
+                        "checkpointed_size":  7875245,
+                        "state_size":  7875245,
+                        "end_to_end_duration":  65,
+                        "alignment_buffered":  0,
+                        "processed_data":  0,
+                        "persisted_data":  0,
+                        "num_subtasks":  6,
+                        "num_acknowledged_subtasks":  6,
+                        "checkpoint_type":  "CHECKPOINT",
+                        "tasks":  {
+
+                                  },
+                        "external_path":  "file:/tmp/flink-checkpoints-directory/344360c66b87dc6e5ceba0a5bdf84b71/chk-9",
+                        "discarded":  true
+                    },
+                    {
+                        "className":  "completed",
+                        "id":  8,
+                        "status":  "COMPLETED",
+                        "is_savepoint":  false,
+                        "trigger_timestamp":  1788006373307,
+                        "latest_ack_timestamp":  1788006373368,
+                        "checkpointed_size":  7875245,
+                        "state_size":  7875245,
+                        "end_to_end_duration":  61,
+                        "alignment_buffered":  0,
+                        "processed_data":  0,
+                        "persisted_data":  0,
+                        "num_subtasks":  6,
+                        "num_acknowledged_subtasks":  6,
+                        "checkpoint_type":  "CHECKPOINT",
+                        "tasks":  {
+
+                                  },
+                        "external_path":  "file:/tmp/flink-checkpoints-directory/344360c66b87dc6e5ceba0a5bdf84b71/chk-8",
+                        "discarded":  true
+                    },
+                    {
+                        "className":  "completed",
+                        "id":  7,
+                        "status":  "COMPLETED",
+                        "is_savepoint":  false,
+                        "trigger_timestamp":  1788006363307,
+                        "latest_ack_timestamp":  1788006363371,
+                        "checkpointed_size":  7875245,
+                        "state_size":  7875245,
+                        "end_to_end_duration":  64,
+                        "alignment_buffered":  0,
+                        "processed_data":  0,
+                        "persisted_data":  0,
+                        "num_subtasks":  6,
+                        "num_acknowledged_subtasks":  6,
+                        "checkpoint_type":  "CHECKPOINT",
+                        "tasks":  {
+
+                                  },
+                        "external_path":  "file:/tmp/flink-checkpoints-directory/344360c66b87dc6e5ceba0a5bdf84b71/chk-7",
+                        "discarded":  true
+                    }
+                ]
+}

@@ -30,12 +30,22 @@ The liveness endpoint is process-only; readiness checks ClickHouse. A failed
 query or Kafka publish returns 503 and does not start the minimum-dwell timer.
 Normal windows return `NO_ANOMALY` without publishing. Expected deltas remain
 model estimates; the separate outcome endpoint is the only place for observed
-deltas.
+deltas. Recommendation events reach ClickHouse through Kafka; input windows,
+query/config versions, reason codes, and per-node evidence are retained there.
+Acknowledgements and outcomes use bounded HTTP requests to dedicated ClickHouse
+tables so they survive API restarts.
 
 ## Reliability boundaries
 
 - Kafka absorbs producer/consumer rate mismatch and short processing outages.
 - Flink checkpoints state; replay and duplicate delivery are expected.
+- The analytics job keeps externalized checkpoints, tolerates at most 10
+  failures per five-minute interval with a five-second delay, and restores
+  event-ID deduplication/window state before consuming outage backlog.
+- Delivery sources mark Kafka partitions idle after 30 seconds so an empty
+  partition cannot indefinitely hold back event-time progress. Windows accept
+  five seconds of lateness, emit a higher revision when corrected, and route
+  events beyond that boundary to a redacted late-event audit path.
 - A dead-letter topic isolates malformed records without leaking raw payloads.
 - ClickHouse is not placed in the DNS request path.
 - Missing, stale, or future-dated analytics data produces no unsafe routing mutation.

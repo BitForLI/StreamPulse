@@ -46,8 +46,8 @@ type Publisher interface {
 }
 
 type AuditStore interface {
-	Acknowledge(domain.Acknowledgement) error
-	Outcome(domain.Outcome) error
+	Acknowledge(context.Context, domain.Acknowledgement) error
+	Outcome(context.Context, domain.Outcome) error
 }
 
 type Config struct {
@@ -209,7 +209,7 @@ func (s *Service) Evaluate(ctx context.Context, request domain.EvaluationRequest
 	}, nil
 }
 
-func (s *Service) Acknowledge(id string, acknowledgement domain.Acknowledgement) error {
+func (s *Service) Acknowledge(ctx context.Context, id string, acknowledgement domain.Acknowledgement) error {
 	if id == "" || acknowledgement.Actor == "" || acknowledgement.Status == "" {
 		return ErrInvalidRequest
 	}
@@ -217,10 +217,13 @@ func (s *Service) Acknowledge(id string, acknowledgement domain.Acknowledgement)
 	if acknowledgement.ObservedAt.IsZero() {
 		acknowledgement.ObservedAt = s.now().UTC()
 	}
-	return s.audit.Acknowledge(acknowledgement)
+	if err := s.audit.Acknowledge(ctx, acknowledgement); err != nil {
+		return fmt.Errorf("%w: persist acknowledgement: %v", ErrDependencyUnavailable, err)
+	}
+	return nil
 }
 
-func (s *Service) RecordOutcome(id string, outcome domain.Outcome) error {
+func (s *Service) RecordOutcome(ctx context.Context, id string, outcome domain.Outcome) error {
 	if id == "" {
 		return ErrInvalidRequest
 	}
@@ -228,7 +231,10 @@ func (s *Service) RecordOutcome(id string, outcome domain.Outcome) error {
 	if outcome.ObservedAt.IsZero() {
 		outcome.ObservedAt = s.now().UTC()
 	}
-	return s.audit.Outcome(outcome)
+	if err := s.audit.Outcome(ctx, outcome); err != nil {
+		return fmt.Errorf("%w: persist outcome: %v", ErrDependencyUnavailable, err)
+	}
+	return nil
 }
 
 func (s *Service) lastGeneration(scope domain.Scope) (time.Time, bool) {

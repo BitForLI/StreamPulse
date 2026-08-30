@@ -3,11 +3,20 @@ set -eu
 
 bootstrap_server="${KAFKA_BOOTSTRAP_SERVER:-kafka:9092}"
 
+if command -v kafka-topics.sh >/dev/null 2>&1; then
+  kafka_topics="kafka-topics.sh"
+elif [ -x /opt/kafka/bin/kafka-topics.sh ]; then
+  kafka_topics="/opt/kafka/bin/kafka-topics.sh"
+else
+  echo "kafka-topics.sh not found in PATH or /opt/kafka/bin" >&2
+  exit 1
+fi
+
 create_topic() {
   topic="$1"
   partitions="$2"
   retention_ms="$3"
-  kafka-topics.sh \
+  "$kafka_topics" \
     --bootstrap-server "$bootstrap_server" \
     --create \
     --if-not-exists \
@@ -26,4 +35,4 @@ create_topic cdn.metrics.content.5m.v1 3 604800000
 create_topic cdn.recommendations.v1 3 2592000000
 create_topic cdn.dead-letter.v1 3 604800000
 
-kafka-topics.sh --bootstrap-server "$bootstrap_server" --list
+"$kafka_topics" --bootstrap-server "$bootstrap_server" --list

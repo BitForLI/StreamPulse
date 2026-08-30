@@ -14,11 +14,16 @@ dashboard.
 
 Day 1 contracts, the Day 2 deterministic generator, the Day 3 core Flink
 analytics job, and the Day 4 ClickHouse/Grafana path are implemented and
-broker-integrated. Day 5 recommendation API source, explainable detectors,
-scorer, and guardrails are implemented and locally tested; their fault-to-Kafka
-runtime gate remains pending. Day 6 detector comparison is complete across
-three independently seeded Kafka/Flink/ClickHouse runs, and the ClickHouse
-pause/catch-up gate passed; restart correctness gates are still open. The
+broker-integrated. The Day 5 recommendation API, explainable detectors, scorer,
+guardrails, Kafka publication, complete ClickHouse audit record, and durable
+ack/outcome path have passed a real fault-injection gate. Day 6 detector
+comparison is complete across three independently seeded Kafka/Flink/ClickHouse
+runs. The ClickHouse pause/catch-up and Flink TaskManager checkpoint-recovery
+gates also passed. An isolated two-partition integration gate also verified idle
+partition watermark progress, allowed-late revision, and too-late DLQ routing.
+Day 7 cross-event contracts, CI configuration, evidence-backed resume bullets,
+and the synthetic demo entry point are implemented; the demo itself passed a
+fresh end-to-end run. The
 repository contains four v1 event schemas, compatibility/privacy enforcement,
 topic design, fixed-seed CDN fault scenarios, Kafka and JSONL sinks, manifest
 generation, event-time/watermark handling, deduplication, DLQ/late outputs, and
@@ -63,6 +68,16 @@ The DNS request path never waits for StreamPulse. Recommendations carry an
 expiry, evidence window, confidence, reason codes, and bounded proposed weights;
 EdgeRoute integration remains an explicit later-stage contract.
 
+### Live verification snapshot
+
+![StreamPulse Grafana dashboard](docs/streampulse-dashboard.png)
+
+This PNG was rendered from the live local Kafka -> Flink -> ClickHouse ->
+Grafana stack, not from a mockup. The retained shadow recommendations shown in
+the audit tables have passed their 120-second TTL, so `Active recommendations`
+correctly reads zero while reason codes, proposed weights, and expected deltas
+remain queryable.
+
 The recommendation API follows `HTTP handler -> use case -> query repository ->
 detector/scorer -> guardrail -> Kafka publisher`. It combines a fixed rule with
 past-window EWMA and rolling median/MAD evidence, rejects stale/future/unhealthy/
@@ -80,10 +95,27 @@ python -m pip install -r requirements-test.txt
 python -m unittest discover -s tests/schema -v
 ```
 
-Expected result: seven contract tests pass. They cover minimal/full valid
+Expected result: eight contract tests pass. They cover minimal/full valid
 events, a forward-compatible optional field, missing required fields, unknown
 enums, invalid numeric bounds, expired recommendations, and forbidden privacy
-data.
+data. The eighth test checks that RoutingEvent candidates and shadow
+RecommendationEvent node weights form a compatible cross-project fixture.
+
+## Five-minute synthetic demo
+
+Prerequisites are Docker Desktop, PowerShell 7, Java 17+ with Maven, and Go
+1.23+. The script starts the pinned local services, creates topics, injects a
+fresh synthetic CDN fault, runs an isolated Flink job, and verifies a
+TTL-bound shadow recommendation through Kafka and ClickHouse:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/demo.ps1
+```
+
+The command leaves the reusable stack and dashboard data running, cancels its
+isolated Flink job, and writes temporary evidence under `.tmp/demo/`. It never
+applies a recommendation to EdgeRoute. A five-minute presentation sequence and
+the expected evidence at each step are in [`docs/demo.md`](docs/demo.md).
 
 ## Generator quick start
 
@@ -168,6 +200,48 @@ and returned to `0` within `20.373` seconds of restart; target tables contained
 isolated event-time range. No table was truncated or data deleted. See
 [`experiments/results/clickhouse-catchup/report.md`](experiments/results/clickhouse-catchup/report.md).
 
+The TaskManager recovery test retained the same Flink Job ID, transitioned
+`6 -> 0 -> 6` running vertices, restored checkpoint 15, recovered all vertices
+in 12.779 seconds, and reduced observed source lag from 2,626 to zero. Replaying
+the exact same event IDs produced `1,198` unique raw requests and exactly
+`1,198` node/network aggregate requests for the checked minute. The first
+attempt, which exhausted an overly small three-retry budget, is retained in the
+report rather than omitted. See
+[`experiments/results/flink-restart/report.md`](experiments/results/flink-restart/report.md).
+
+The watermark/lateness gate used an isolated two-partition delivery topic with
+one partition intentionally idle. The target minute became visible with 600
+requests at revision 0; an allowed-late event updated it to 601 at revision 1.
+After allowed lateness expired, a second late event produced one redacted
+`TOO_LATE` record while the aggregate remained 601/revision 1. The isolated job
+was cancelled afterward and the main analytics and upstream ClickCount jobs
+remained running. See
+[`experiments/results/watermark-lateness/report.md`](experiments/results/watermark-lateness/report.md).
+
+```powershell
+make watermark-lateness-test
+```
+
+## Recommendation end-to-end gate
+
+The fixed-seed fault scenario runs an isolated Flink job with a dedicated
+consumer group and `latest` starting offsets, so prior experiment watermarks and
+committed offsets cannot make current events late. The successful run generated
+schema-v1 shadow recommendation `rec-b4861107ffbf3c4cef004a0d`; the Kafka topic
+offset total advanced from `2` to `3`, and ClickHouse returned the same ID with
+all three node evidence records, the input window, query version, and config
+hash. TTL was 120 seconds and no absolute node-weight step exceeded 0.20.
+
+The same run persisted one acknowledgement and one explicitly non-causal
+synthetic outcome for that recommendation ID. The optional upstream ClickCount
+job is suspended only when no Flink slot is free, then restored in `finally`;
+the main StreamPulse job is never stopped. Evidence is in
+[`experiments/reports/recommendation-api/e2e-result.json`](experiments/reports/recommendation-api/e2e-result.json).
+
+```powershell
+make recommendation-e2e
+```
+
 ## Detector comparison gate
 
 The fixed-threshold, combined-rule, and past-only EWMA/MAD strategies were
@@ -206,11 +280,15 @@ and its machine-readable `summary.json`.
   signed URLs, raw user agents, accounts, device IDs, email, or phone data.
 - V1 normal synthetic traffic is unsampled to keep count checks exact.
 - Recommendation output is shadow-only and cannot mutate production routing.
-- ClickHouse storage and Grafana dashboard queries are locally integrated.
-  Recommendation API code is locally tested, but its injected-fault-to-Kafka
-  container integration is not yet claimed complete. Model comparison,
-  EdgeRoute shadow integration, and StreamPulse-specific runtime failure
-  experiments are subsequent stages. Checkpoint restore and restart aggregate
-  comparison remain unverified.
+- ClickHouse storage, Grafana queries, recommendation publication, complete
+  recommendation audit fields, and ack/outcome durability are locally
+  integrated. EdgeRoute shadow consumption remains a later cross-project stage.
+- Expected deltas are model estimates. The persisted synthetic outcome is only
+  a storage-path check and is explicitly not presented as causal improvement.
+- The watermark/lateness result proves the scoped two-partition local case; it
+  is not a claim about arbitrary partition counts or production traffic.
+- The dashboard is provisioned, its 20 SQL panels are API/query verified, and a
+  static screenshot from the live local stack is retained in this repository.
+  A narrated screen recording has not yet been produced.
 
 See [`THIRD_PARTY.md`](THIRD_PARTY.md) for provenance and license boundaries.

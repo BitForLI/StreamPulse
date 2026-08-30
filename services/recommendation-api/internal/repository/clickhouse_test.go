@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"encoding/json"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -52,7 +53,7 @@ func TestHistoryUsesClickHouseParametersAndParsesRows(t *testing.T) {
 func TestLatestRecommendationParsesStoredJSONWeights(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(response http.ResponseWriter, _ *http.Request) {
 		response.Header().Set("Content-Type", "application/json")
-		_, _ = response.Write([]byte(`{"data":[{"recommendation_id":"rec-12345678","created_at":"2026-08-29 09:00:00.000","valid_until":"2026-08-29 09:02:00.000","revision":1,"mode":"shadow","action":"adjust_node_weights","current_json":"{\"edge-a\":0.5,\"edge-b\":0.5}","proposed_json":"{\"edge-a\":0.3,\"edge-b\":0.7}","evidence_window":"15m","reason_codes":["MAX_WEIGHT_STEP_OK"],"expected_p95_ttfb_delta_ms":-20,"expected_error_rate_delta":-0.01,"expected_cost_units_delta":0.2,"confidence":0.8,"model_version":"rule-ewma-mad-v1"}]}`))
+		_, _ = response.Write([]byte(`{"data":[{"recommendation_id":"rec-12345678","created_at":"2026-08-29 09:00:00.000","valid_until":"2026-08-29 09:02:00.000","revision":1,"mode":"shadow","action":"adjust_node_weights","current_json":"{\"edge-a\":0.5,\"edge-b\":0.5}","proposed_json":"{\"edge-a\":0.3,\"edge-b\":0.7}","evidence_window":"15m","reason_codes":["MAX_WEIGHT_STEP_OK"],"expected_p95_ttfb_delta_ms":-20,"expected_error_rate_delta":-0.01,"expected_cost_units_delta":0.2,"confidence":0.8,"model_version":"rule-ewma-mad-v1","input_window_start":"2026-08-29 08:45:00.000","input_window_end":"2026-08-29 09:00:00.000","query_version":"node-quality-v1","config_hash":"config-1234","evidence_json":"{}"}]}`))
 	}))
 	defer server.Close()
 	repository := NewClickHouse(ClickHouseConfig{Endpoint: server.URL, Timeout: time.Second})
@@ -66,6 +67,50 @@ func TestLatestRecommendationParsesStoredJSONWeights(t *testing.T) {
 	}
 	if recommendation.ValidUntil.Sub(recommendation.CreatedAt) != 2*time.Minute {
 		t.Fatalf("unexpected persisted TTL: %s", recommendation.ValidUntil.Sub(recommendation.CreatedAt))
+	}
+	if recommendation.QueryVersion != "node-quality-v1" || recommendation.ConfigHash != "config-1234" || recommendation.InputWindowEnd.IsZero() {
+		t.Fatalf("missing persisted audit fields: %#v", recommendation)
+	}
+}
+
+func TestAuditWritesUseJSONEachRowAndRequestContext(t *testing.T) {
+	requests := make(chan map[string]any, 2)
+	server := httptest.NewServer(http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
+		if request.URL.Query().Get("date_time_input_format") != "best_effort" {
+			t.Fatal("missing best-effort DateTime input setting")
+		}
+		payload := make(map[string]any)
+		if err := json.NewDecoder(request.Body).Decode(&payload); err != nil {
+			t.Fatalf("decode insert body: %v", err)
+		}
+		payload["query"] = request.URL.Query().Get("query")
+		requests <- payload
+		response.WriteHeader(http.StatusOK)
+	}))
+	defer server.Close()
+	repository := NewClickHouse(ClickHouseConfig{Endpoint: server.URL, Timeout: time.Second})
+	observedAt := time.Date(2026, 8, 29, 9, 3, 0, 0, time.UTC)
+
+	if err := repository.Acknowledge(context.Background(), domain.Acknowledgement{
+		RecommendationID: "rec-12345678", Actor: "edge-shadow", Status: "observed", ObservedAt: observedAt,
+	}); err != nil {
+		t.Fatalf("acknowledge: %v", err)
+	}
+	if err := repository.Outcome(context.Background(), domain.Outcome{
+		RecommendationID: "rec-12345678", ObservedAt: observedAt,
+		ObservedDelta: domain.ExpectedDelta{P95TTFBDeltaMS: -10, ErrorRateDelta: -0.01, CostUnitsDelta: 0.2},
+		Notes:         "shadow comparison",
+	}); err != nil {
+		t.Fatalf("outcome: %v", err)
+	}
+
+	ack := <-requests
+	outcome := <-requests
+	if !strings.Contains(ack["query"].(string), "recommendation_acknowledgements") || ack["actor"] != "edge-shadow" {
+		t.Fatalf("unexpected acknowledgement insert: %#v", ack)
+	}
+	if !strings.Contains(outcome["query"].(string), "recommendation_outcomes") || outcome["notes"] != "shadow comparison" {
+		t.Fatalf("unexpected outcome insert: %#v", outcome)
 	}
 }
 

@@ -25,6 +25,7 @@ func main() {
 	gitCommit := flag.String("git-commit", envOr("GIT_COMMIT", "uncommitted-or-unknown"), "source revision")
 	startTime := flag.String("start-time", "", "optional RFC3339 simulation start override; recorded in the manifest")
 	seed := flag.String("seed", "", "optional integer seed override; recorded in the manifest")
+	deliveryTopic := flag.String("delivery-topic", "", "optional delivery topic override for isolated experiments")
 	flag.Parse()
 
 	cfg, _, err := config.Load(*configPath)
@@ -37,6 +38,10 @@ func main() {
 	if *seed != "" {
 		cfg.Seed, err = strconv.ParseInt(*seed, 10, 64)
 		check(err)
+		overridden = true
+	}
+	if *deliveryTopic != "" {
+		cfg.DeliveryTopic = *deliveryTopic
 		overridden = true
 	}
 	if overridden {

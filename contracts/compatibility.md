@@ -16,3 +16,16 @@ consumers follow these rules:
 
 The JSON Schemas therefore allow additional optional properties, while privacy
 tests independently reject prohibited field names and unsafe URL values.
+
+## Routing/recommendation boundary
+
+The paired v1 fixtures additionally enforce the cross-project shadow contract:
+
+- `current` and `proposed` contain the same node IDs;
+- every recommended node is present in the routing candidate set;
+- proposed weights sum to 1.0;
+- StreamPulse only emits `mode=shadow` and `action=adjust_node_weights`.
+
+This contract makes a recommendation auditable by EdgeRoute without granting
+StreamPulse permission to mutate the online routing path. Contract validity is
+necessary for a future adapter, but does not claim that adapter is implemented.

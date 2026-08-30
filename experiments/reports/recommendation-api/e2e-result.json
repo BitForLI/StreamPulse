@@ -1,0 +1,244 @@
+﻿{
+    "measured_at_utc":  "2026-08-29T12:54:16.3122013Z",
+    "scenario":  "experiments/scenarios/recommendation-fault.yaml",
+    "start_time_override":  "2026-08-29T12:47:14Z",
+    "flink_job":  {
+                      "id":  "54e1e61d745eac06f76969ca9077df60",
+                      "name":  "StreamPulse Recommendation E2E Analytics v1",
+                      "kafka_group_id":  "streampulse-recommendation-e2e-v1",
+                      "starting_offsets":  "latest"
+                  },
+    "kafka_recommendation_offsets":  {
+                                         "before":  {
+                                                        "lines":  [
+                                                                      "cdn.recommendations.v1:0:2",
+                                                                      "cdn.recommendations.v1:1:0",
+                                                                      "cdn.recommendations.v1:2:0"
+                                                                  ],
+                                                        "total":  2
+                                                    },
+                                         "after":  {
+                                                       "lines":  [
+                                                                     "cdn.recommendations.v1:0:3",
+                                                                     "cdn.recommendations.v1:1:0",
+                                                                     "cdn.recommendations.v1:2:0"
+                                                                 ],
+                                                       "total":  3
+                                                   },
+                                         "delta":  1
+                                     },
+    "generator_manifest_sha256":  "d6ae288c20734d0573c4718a2e734cd117d9479c86035e911e45c683e67418e6",
+    "evaluation":  {
+                       "generated":  true,
+                       "reason_codes":  [
+                                            "BOUNDED_MULTI_OBJECTIVE_SCORE",
+                                            "CAPACITY_HEADROOM_OK",
+                                            "EWMA_ERROR_RATE_ANOMALY",
+                                            "EWMA_MAD_LATENCY_ANOMALY",
+                                            "MAX_WEIGHT_STEP_OK",
+                                            "RULE_LATENCY_ERROR_ANOMALY"
+                                        ],
+                       "recommendation":  {
+                                              "schema_version":  1,
+                                              "recommendation_id":  "rec-b4861107ffbf3c4cef004a0d",
+                                              "created_at":  "2026-08-29T12:54:09.202502224Z",
+                                              "valid_until":  "2026-08-29T12:56:09.202502224Z",
+                                              "mode":  "shadow",
+                                              "scope":  {
+                                                            "location":  "au-sydney",
+                                                            "network_id":  "as-synthetic-1221"
+                                                        },
+                                              "action":  "adjust_node_weights",
+                                              "current":  {
+                                                              "edge-mel-a":  0.3333333333333333,
+                                                              "edge-syd-a":  0.3333333333333333,
+                                                              "edge-syd-b":  0.3333333333333333
+                                                          },
+                                              "proposed":  {
+                                                               "edge-mel-a":  0.2678238158689957,
+                                                               "edge-syd-a":  0.19884285079767094,
+                                                               "edge-syd-b":  0.5333333333333333
+                                                           },
+                                              "evidence_window":  "15m",
+                                              "reason_codes":  [
+                                                                   "BOUNDED_MULTI_OBJECTIVE_SCORE",
+                                                                   "CAPACITY_HEADROOM_OK",
+                                                                   "EWMA_ERROR_RATE_ANOMALY",
+                                                                   "EWMA_MAD_LATENCY_ANOMALY",
+                                                                   "MAX_WEIGHT_STEP_OK",
+                                                                   "RULE_LATENCY_ERROR_ANOMALY"
+                                                               ],
+                                              "expected":  {
+                                                               "p95_ttfb_delta_ms":  -19.83127125495561,
+                                                               "error_rate_delta":  -0.029023781945386108,
+                                                               "cost_units_delta":  -0.36881242893650423
+                                                           },
+                                              "confidence":  0.862,
+                                              "model_version":  "rule-ewma-mad-v1",
+                                              "revision":  1,
+                                              "input_window_start":  "2026-08-29T12:52:00Z",
+                                              "input_window_end":  "2026-08-29T12:53:00Z",
+                                              "query_version":  "node-quality-v1",
+                                              "config_hash":  "3349582bc58d125c",
+                                              "evidence":  {
+                                                               "edge-mel-a":  {
+                                                                                  "window_start":  "2026-08-29T12:52:00Z",
+                                                                                  "window_end":  "2026-08-29T12:53:00Z",
+                                                                                  "scope":  {
+                                                                                                "location":  "au-sydney",
+                                                                                                "network_id":  "as-synthetic-1221"
+                                                                                            },
+                                                                                  "node_id":  "edge-mel-a",
+                                                                                  "requests":  299,
+                                                                                  "error_5xx_rate":  0,
+                                                                                  "cache_hit_ratio":  0.8996655518394648,
+                                                                                  "origin_ms_total":  1055.664,
+                                                                                  "ttfb_p50_ms":  31.433,
+                                                                                  "ttfb_p95_ms":  66.507,
+                                                                                  "ttfb_p99_ms":  73.332,
+                                                                                  "saturation":  0.2,
+                                                                                  "healthy":  true
+                                                                              },
+                                                               "edge-syd-a":  {
+                                                                                  "window_start":  "2026-08-29T12:52:00Z",
+                                                                                  "window_end":  "2026-08-29T12:53:00Z",
+                                                                                  "scope":  {
+                                                                                                "location":  "au-sydney",
+                                                                                                "network_id":  "as-synthetic-1221"
+                                                                                            },
+                                                                                  "node_id":  "edge-syd-a",
+                                                                                  "requests":  329,
+                                                                                  "error_5xx_rate":  0.21580547112462006,
+                                                                                  "cache_hit_ratio":  0.9422492401215805,
+                                                                                  "origin_ms_total":  1439.2489999999998,
+                                                                                  "ttfb_p50_ms":  203.724,
+                                                                                  "ttfb_p95_ms":  211.004,
+                                                                                  "ttfb_p99_ms":  316.742,
+                                                                                  "saturation":  0.2,
+                                                                                  "healthy":  true
+                                                                              },
+                                                               "edge-syd-b":  {
+                                                                                  "window_start":  "2026-08-29T12:52:00Z",
+                                                                                  "window_end":  "2026-08-29T12:53:00Z",
+                                                                                  "scope":  {
+                                                                                                "location":  "au-sydney",
+                                                                                                "network_id":  "as-synthetic-1221"
+                                                                                            },
+                                                                                  "node_id":  "edge-syd-b",
+                                                                                  "requests":  304,
+                                                                                  "error_5xx_rate":  0,
+                                                                                  "cache_hit_ratio":  0.9342105263157895,
+                                                                                  "origin_ms_total":  685.251,
+                                                                                  "ttfb_p50_ms":  38.302,
+                                                                                  "ttfb_p95_ms":  64.518,
+                                                                                  "ttfb_p99_ms":  79.071,
+                                                                                  "saturation":  0.2,
+                                                                                  "healthy":  true
+                                                                              }
+                                                           }
+                                          }
+                   },
+    "clickhouse_persisted":  {
+                                 "schema_version":  1,
+                                 "recommendation_id":  "rec-b4861107ffbf3c4cef004a0d",
+                                 "created_at":  "2026-08-29T12:54:09.202Z",
+                                 "valid_until":  "2026-08-29T12:56:09.202Z",
+                                 "mode":  "shadow",
+                                 "scope":  {
+                                               "location":  "au-sydney",
+                                               "network_id":  "as-synthetic-1221"
+                                           },
+                                 "action":  "adjust_node_weights",
+                                 "current":  {
+                                                 "edge-mel-a":  0.3333333333333333,
+                                                 "edge-syd-a":  0.3333333333333333,
+                                                 "edge-syd-b":  0.3333333333333333
+                                             },
+                                 "proposed":  {
+                                                  "edge-mel-a":  0.2678238158689957,
+                                                  "edge-syd-a":  0.19884285079767094,
+                                                  "edge-syd-b":  0.5333333333333333
+                                              },
+                                 "evidence_window":  "15m",
+                                 "reason_codes":  [
+                                                      "BOUNDED_MULTI_OBJECTIVE_SCORE",
+                                                      "CAPACITY_HEADROOM_OK",
+                                                      "EWMA_ERROR_RATE_ANOMALY",
+                                                      "EWMA_MAD_LATENCY_ANOMALY",
+                                                      "MAX_WEIGHT_STEP_OK",
+                                                      "RULE_LATENCY_ERROR_ANOMALY"
+                                                  ],
+                                 "expected":  {
+                                                  "p95_ttfb_delta_ms":  -19.83127125495561,
+                                                  "error_rate_delta":  -0.029023781945386108,
+                                                  "cost_units_delta":  -0.36881242893650423
+                                              },
+                                 "confidence":  0.862,
+                                 "model_version":  "rule-ewma-mad-v1",
+                                 "revision":  1,
+                                 "input_window_start":  "2026-08-29T12:52:00Z",
+                                 "input_window_end":  "2026-08-29T12:53:00Z",
+                                 "query_version":  "node-quality-v1",
+                                 "config_hash":  "3349582bc58d125c",
+                                 "evidence":  {
+                                                  "edge-mel-a":  {
+                                                                     "window_start":  "2026-08-29T12:52:00Z",
+                                                                     "window_end":  "2026-08-29T12:53:00Z",
+                                                                     "scope":  {
+                                                                                   "location":  "au-sydney",
+                                                                                   "network_id":  "as-synthetic-1221"
+                                                                               },
+                                                                     "node_id":  "edge-mel-a",
+                                                                     "requests":  299,
+                                                                     "error_5xx_rate":  0,
+                                                                     "cache_hit_ratio":  0.8996655518394648,
+                                                                     "origin_ms_total":  1055.664,
+                                                                     "ttfb_p50_ms":  31.433,
+                                                                     "ttfb_p95_ms":  66.507,
+                                                                     "ttfb_p99_ms":  73.332,
+                                                                     "saturation":  0.2,
+                                                                     "healthy":  true
+                                                                 },
+                                                  "edge-syd-a":  {
+                                                                     "window_start":  "2026-08-29T12:52:00Z",
+                                                                     "window_end":  "2026-08-29T12:53:00Z",
+                                                                     "scope":  {
+                                                                                   "location":  "au-sydney",
+                                                                                   "network_id":  "as-synthetic-1221"
+                                                                               },
+                                                                     "node_id":  "edge-syd-a",
+                                                                     "requests":  329,
+                                                                     "error_5xx_rate":  0.21580547112462006,
+                                                                     "cache_hit_ratio":  0.9422492401215805,
+                                                                     "origin_ms_total":  1439.2489999999998,
+                                                                     "ttfb_p50_ms":  203.724,
+                                                                     "ttfb_p95_ms":  211.004,
+                                                                     "ttfb_p99_ms":  316.742,
+                                                                     "saturation":  0.2,
+                                                                     "healthy":  true
+                                                                 },
+                                                  "edge-syd-b":  {
+                                                                     "window_start":  "2026-08-29T12:52:00Z",
+                                                                     "window_end":  "2026-08-29T12:53:00Z",
+                                                                     "scope":  {
+                                                                                   "location":  "au-sydney",
+                                                                                   "network_id":  "as-synthetic-1221"
+                                                                               },
+                                                                     "node_id":  "edge-syd-b",
+                                                                     "requests":  304,
+                                                                     "error_5xx_rate":  0,
+                                                                     "cache_hit_ratio":  0.9342105263157895,
+                                                                     "origin_ms_total":  685.251,
+                                                                     "ttfb_p50_ms":  38.302,
+                                                                     "ttfb_p95_ms":  64.518,
+                                                                     "ttfb_p99_ms":  79.071,
+                                                                     "saturation":  0.2,
+                                                                     "healthy":  true
+                                                                 }
+                                              }
+                             },
+    "audit_persisted":  {
+                            "acknowledgement_count":  1,
+                            "outcome_count":  1
+                        }
+}

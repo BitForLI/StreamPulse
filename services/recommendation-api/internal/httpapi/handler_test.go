@@ -83,5 +83,5 @@ func (noPublish) Publish(context.Context, domain.Recommendation) error { return 
 
 type noAudit struct{}
 
-func (noAudit) Acknowledge(domain.Acknowledgement) error { return nil }
-func (noAudit) Outcome(domain.Outcome) error             { return nil }
+func (noAudit) Acknowledge(context.Context, domain.Acknowledgement) error { return nil }
+func (noAudit) Outcome(context.Context, domain.Outcome) error             { return nil }

@@ -114,6 +114,21 @@ func TestDeliveryKeysAreBucketedAcrossLocationNetworkSessions(t *testing.T) {
 	}
 }
 
+func TestDeliveryKeyBucketsCanBeCollapsedForIdlePartitionExperiments(t *testing.T) {
+	cfg := testConfig()
+	cfg.Duration = config.Duration(time.Second)
+	cfg.RatePerSecond = 20
+	cfg.DeliveryBuckets = 1
+	cfg.Locations = []config.Location{{Name: "au-sydney", Networks: []string{"as-synthetic-1"}}}
+	cfg.DuplicateRate = 0
+	cfg.SchemaErrorRate = 0
+	cfg.Scenarios = nil
+	_, manifest := runCollect(t, cfg)
+	if len(manifest.DeliveryRecordsByKey) != 1 {
+		t.Fatalf("delivery keys=%d, want exactly one", len(manifest.DeliveryRecordsByKey))
+	}
+}
+
 func runCollect(t *testing.T, cfg config.Config) ([]events.Record, Manifest) {
 	t.Helper()
 	generator, err := New(cfg)

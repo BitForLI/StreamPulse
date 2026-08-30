@@ -83,7 +83,7 @@ func (h *Handler) acknowledge(response http.ResponseWriter, request *http.Reques
 		writeJSON(response, http.StatusBadRequest, map[string]string{"error": "invalid JSON body"})
 		return
 	}
-	if err := h.service.Acknowledge(request.PathValue("id"), acknowledgement); err != nil {
+	if err := h.service.Acknowledge(request.Context(), request.PathValue("id"), acknowledgement); err != nil {
 		writeError(response, err)
 		return
 	}
@@ -96,7 +96,7 @@ func (h *Handler) outcome(response http.ResponseWriter, request *http.Request) {
 		writeJSON(response, http.StatusBadRequest, map[string]string{"error": "invalid JSON body"})
 		return
 	}
-	if err := h.service.RecordOutcome(request.PathValue("id"), outcome); err != nil {
+	if err := h.service.RecordOutcome(request.Context(), request.PathValue("id"), outcome); err != nil {
 		writeError(response, err)
 		return
 	}

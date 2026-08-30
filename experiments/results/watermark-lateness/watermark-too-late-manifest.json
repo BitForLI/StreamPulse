@@ -1,0 +1,21 @@
+{
+  "run_id": "run-cf395a49c4435f266197bcbc",
+  "seed": 20260914,
+  "git_commit": "uncommitted-or-unknown",
+  "simulation_start_utc": "2026-08-29T13:03:40Z",
+  "simulation_end_utc": "2026-08-29T13:03:41Z",
+  "rate_per_second": 1,
+  "base_requests": 1,
+  "records_by_topic": {
+    "cdn.delivery.watermark-test.20260829130519.v1": 1,
+    "cdn.player.v1": 1,
+    "cdn.routing.v1": 1
+  },
+  "delivery_records_by_key": {
+    "au-watermark-test|as-synthetic-watermark|00": 1
+  },
+  "duplicate_records": 0,
+  "schema_error_records": 0,
+  "expected_label_windows": [],
+  "versions": {}
+}

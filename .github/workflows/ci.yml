@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main, feat/streampulse-mvp]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: python -m pip install -r requirements-test.txt
+      - run: python -m unittest discover -s tests/schema -v
+      - run: python -m unittest discover -s tests/experiments -v
+
+      - uses: actions/setup-go@v7
+        with:
+          go-version: "1.23.x"
+          cache-dependency-path: |
+            services/event-generator/go.sum
+            services/recommendation-api/go.sum
+      - run: go test ./...
+        working-directory: services/event-generator
+      - run: go test ./...
+        working-directory: services/recommendation-api
+      - run: go vet ./...
+        working-directory: services/recommendation-api
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+      - run: mvn --batch-mode test
+        working-directory: jobs/cdn-analytics
+
+      - run: docker compose -f compose.yaml config --quiet

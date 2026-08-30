@@ -71,7 +71,7 @@ func main() {
 		detection.New(detectorConfig),
 		scoring.New(scorerConfig),
 		kafkaPublisher,
-		repository.NewMemoryAuditStore(),
+		clickHouse,
 		time.Now,
 	)
 	server := &http.Server{

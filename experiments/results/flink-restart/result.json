@@ -1,0 +1,39 @@
+{
+    "generated_at_utc":  "2026-08-29T12:28:37.8912606Z",
+    "job_id_before":  "344360c66b87dc6e5ceba0a5bdf84b71",
+    "job_id_after":  "344360c66b87dc6e5ceba0a5bdf84b71",
+    "vertices_before":  6,
+    "vertices_during_outage":  0,
+    "vertices_after":  6,
+    "checkpoint_before":  15,
+    "checkpoint_after":  16,
+    "checkpoint_state_size_bytes":  7999960,
+    "restored_checkpoint_id":  15,
+    "restored_checkpoint_path":  "file:/tmp/flink-checkpoints-directory/344360c66b87dc6e5ceba0a5bdf84b71/chk-15",
+    "taskmanager_stop_seconds":  22.208,
+    "taskmanager_start_to_vertices_running_seconds":  12.779,
+    "peak_observed_source_lag":  2626,
+    "final_source_lag":  0,
+    "initial_manifest_sha256":  "4c6605876eaeb4176dee87ade33033332246611c235901a21277667d9e8f91a3",
+    "replay_manifest_sha256":  "4c6605876eaeb4176dee87ade33033332246611c235901a21277667d9e8f91a3",
+    "exact_replay_confirmed":  true,
+    "consistency_window_start":  "2026-09-05 00:01:00.000",
+    "consistency":  {
+                        "unique_delivery":  1198,
+                        "node_requests":  1198,
+                        "network_requests":  1198,
+                        "node_rows":  12,
+                        "network_rows":  4
+                    },
+    "aggregate_equality_passed":  true,
+    "manifests":  [
+                      "experiments/results/flink-restart/initial-manifest.json",
+                      "experiments/results/flink-restart/replay-manifest.json",
+                      "experiments/results/flink-restart/flush-manifest.json"
+                  ],
+    "limitations":  [
+                        "Local single-TaskManager synthetic test only.",
+                        "The equality check covers one completed node/network minute and does not establish production recovery capacity.",
+                        "Raw ClickHouse tables use FINAL unique event IDs as the comparison oracle."
+                    ]
+}

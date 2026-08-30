@@ -1,0 +1,50 @@
+﻿{
+    "measured_at_utc":  "2026-08-29T13:06:52.5572979Z",
+    "flink_job_id":  "3aed3edbcf68d8428e210b19063ea218",
+    "flink_parallelism":  2,
+    "main_job_id_before":  "344360c66b87dc6e5ceba0a5bdf84b71",
+    "delivery_topic":  "cdn.delivery.watermark-test.20260829130519.v1",
+    "dead_letter_topic":  "cdn.dead-letter.watermark-test.20260829130519.v1",
+    "delivery_offsets":  {
+                             "lines":  [
+                                           "cdn.delivery.watermark-test.20260829130519.v1:0:1201",
+                                           "cdn.delivery.watermark-test.20260829130519.v1:1:0"
+                                       ],
+                             "total":  1201
+                         },
+    "idle_partition_count":  1,
+    "idle_timeout_config_seconds":  30,
+    "seconds_from_flush_to_window_visible":  37.712,
+    "target_window_start":  "2026-08-29T13:03:00Z",
+    "target_window_end":  "2026-08-29T13:04:00Z",
+    "initial_window":  {
+                           "requests":  600,
+                           "max_revision":  0,
+                           "node_rows":  2
+                       },
+    "after_allowed_late":  {
+                               "requests":  601,
+                               "max_revision":  1,
+                               "node_rows":  2
+                           },
+    "after_too_late":  {
+                           "requests":  601,
+                           "max_revision":  1,
+                           "node_rows":  2
+                       },
+    "dlq_offsets":  {
+                        "lines":  [
+                                      "cdn.dead-letter.watermark-test.20260829130519.v1:0:1",
+                                      "cdn.dead-letter.watermark-test.20260829130519.v1:1:0"
+                                  ],
+                        "total":  1
+                    },
+    "dlq_record":  {
+                       "source_topic":  "cdn.delivery.watermark-test.20260829130519.v1",
+                       "observed_at":  "2026-08-29T13:06:45.596130Z",
+                       "error_code":  "TOO_LATE",
+                       "error_message":  "event exceeded watermark and allowed lateness",
+                       "payload_sha256":  "54a0db155b7c912e3198291ece652cb193e2c3d7c12bf730f03c6b04dc65edb6",
+                       "payload_preview_redacted":  "redacted:event_id=delivery-1e1deba21ba0a8c011c36e0d"
+                   }
+}

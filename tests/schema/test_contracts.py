@@ -164,6 +164,20 @@ class ContractSchemaTests(unittest.TestCase):
             semantic_violations("recommendation", value),
         )
 
+    def test_routing_recommendation_fixture_contract(self) -> None:
+        routing = load_json(VALID_FIXTURES / "routing-full.json")
+        recommendation = load_json(VALID_FIXTURES / "recommendation-full.json")
+
+        candidate_nodes = set(routing["candidate_nodes"])
+        current_nodes = set(recommendation["current"])
+        proposed_nodes = set(recommendation["proposed"])
+
+        self.assertEqual(current_nodes, proposed_nodes)
+        self.assertTrue(proposed_nodes.issubset(candidate_nodes))
+        self.assertEqual("shadow", recommendation["mode"])
+        self.assertEqual("adjust_node_weights", recommendation["action"])
+        self.assertAlmostEqual(1.0, sum(recommendation["proposed"].values()))
+
 
 if __name__ == "__main__":
     unittest.main()

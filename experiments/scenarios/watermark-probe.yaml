@@ -1,0 +1,27 @@
+seed: 20260911
+start_time: "2026-08-29T00:00:00Z"
+duration: 1s
+rate_per_second: 1
+out_of_order_max: 0s
+duplicate_rate: 0
+schema_error_rate: 0
+delivery_key_buckets: 1
+delivery_topic: cdn.delivery.watermark-test.v1
+
+locations:
+  - name: au-watermark-test
+    networks: [as-synthetic-watermark]
+
+nodes:
+  - id: edge-watermark-a
+    base_ttfb_ms: 25
+    capacity_rps: 100
+  - id: edge-watermark-b
+    base_ttfb_ms: 35
+    capacity_rps: 100
+
+content:
+  count: 20
+  popularity: zipf
+
+scenarios: []

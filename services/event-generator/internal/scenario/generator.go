@@ -97,7 +97,7 @@ func (g *Generator) Run(ctx context.Context, gitCommit string, versions map[stri
 				return manifest, err
 			}
 			manifest.RecordsByTopic[record.Topic]++
-			if record.Topic == events.DeliveryTopic {
+			if record.Topic == g.cfg.DeliveryTopicName() {
 				manifest.DeliveryRecordsByKey[record.Key]++
 			}
 			if record.Duplicate {
@@ -207,10 +207,10 @@ func (g *Generator) generateRequest(index int64) ([]events.Record, error) {
 		}
 	}
 
-	deliveryKey := location.Name + "|" + network + "|" + fmt.Sprintf("%02d", stableBucket(session, 16))
+	deliveryKey := location.Name + "|" + network + "|" + fmt.Sprintf("%02d", stableBucket(session, g.cfg.DeliveryKeyBucketCount()))
 	records := []events.Record{
 		{Topic: events.RoutingTopic, Key: requestID, Value: routingValue},
-		{Topic: events.DeliveryTopic, Key: deliveryKey, Value: deliveryValue, SchemaInvalid: schemaInvalid},
+		{Topic: g.cfg.DeliveryTopicName(), Key: deliveryKey, Value: deliveryValue, SchemaInvalid: schemaInvalid},
 	}
 	if index%4 == 0 {
 		rebuffer := (*float64)(nil)
@@ -239,7 +239,7 @@ func (g *Generator) generateRequest(index int64) ([]events.Record, error) {
 	}
 	if g.rng.Float64() < g.cfg.DuplicateRate {
 		records = append(records, events.Record{
-			Topic:         events.DeliveryTopic,
+			Topic:         g.cfg.DeliveryTopicName(),
 			Key:           deliveryKey,
 			Value:         append([]byte(nil), deliveryValue...),
 			Duplicate:     true,

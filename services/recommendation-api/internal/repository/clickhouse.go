@@ -132,7 +132,8 @@ func (c *ClickHouse) LatestRecommendation(ctx context.Context, scope domain.Scop
 SELECT recommendation_id, created_at, valid_until, revision, mode, action,
        current_json, proposed_json, evidence_window, reason_codes,
        expected_p95_ttfb_delta_ms, expected_error_rate_delta,
-       expected_cost_units_delta, confidence, model_version
+       expected_cost_units_delta, confidence, model_version,
+       input_window_start, input_window_end, query_version, config_hash, evidence_json
 FROM streampulse.recommendations FINAL
 WHERE location = {location:String} AND network_id = {network:String}
 ORDER BY created_at DESC, revision DESC
@@ -168,6 +169,20 @@ FORMAT JSON`
 	if err := json.Unmarshal([]byte(row.ProposedJSON), &proposed); err != nil {
 		return nil, fmt.Errorf("decode proposed weights: %w", err)
 	}
+	inputWindowStart, err := parseClickHouseTime(row.InputWindowStart)
+	if err != nil {
+		return nil, fmt.Errorf("parse input_window_start: %w", err)
+	}
+	inputWindowEnd, err := parseClickHouseTime(row.InputWindowEnd)
+	if err != nil {
+		return nil, fmt.Errorf("parse input_window_end: %w", err)
+	}
+	evidence := make(map[string]domain.NodeMetric)
+	if row.EvidenceJSON != "" && row.EvidenceJSON != "{}" {
+		if err := json.Unmarshal([]byte(row.EvidenceJSON), &evidence); err != nil {
+			return nil, fmt.Errorf("decode evidence: %w", err)
+		}
+	}
 	return &domain.Recommendation{
 		SchemaVersion:    1,
 		RecommendationID: row.RecommendationID,
@@ -186,9 +201,74 @@ FORMAT JSON`
 			ErrorRateDelta: row.ExpectedError,
 			CostUnitsDelta: row.ExpectedCost,
 		},
-		Confidence:   row.Confidence,
-		ModelVersion: row.ModelVersion,
+		Confidence:       row.Confidence,
+		ModelVersion:     row.ModelVersion,
+		InputWindowStart: inputWindowStart,
+		InputWindowEnd:   inputWindowEnd,
+		QueryVersion:     row.QueryVersion,
+		ConfigHash:       row.ConfigHash,
+		Evidence:         evidence,
 	}, nil
+}
+
+func (c *ClickHouse) Acknowledge(ctx context.Context, acknowledgement domain.Acknowledgement) error {
+	payload := acknowledgementRow{
+		RecommendationID: acknowledgement.RecommendationID,
+		Actor:            acknowledgement.Actor,
+		Status:           acknowledgement.Status,
+		ObservedAt:       acknowledgement.ObservedAt.UTC().Format(time.RFC3339Nano),
+	}
+	return c.insertJSONEachRow(
+		ctx,
+		"INSERT INTO streampulse.recommendation_acknowledgements FORMAT JSONEachRow",
+		payload,
+	)
+}
+
+func (c *ClickHouse) Outcome(ctx context.Context, outcome domain.Outcome) error {
+	payload := outcomeRow{
+		RecommendationID:     outcome.RecommendationID,
+		ObservedAt:           outcome.ObservedAt.UTC().Format(time.RFC3339Nano),
+		ObservedP95TTFBDelta: outcome.ObservedDelta.P95TTFBDeltaMS,
+		ObservedErrorDelta:   outcome.ObservedDelta.ErrorRateDelta,
+		ObservedCostDelta:    outcome.ObservedDelta.CostUnitsDelta,
+		Notes:                outcome.Notes,
+	}
+	return c.insertJSONEachRow(
+		ctx,
+		"INSERT INTO streampulse.recommendation_outcomes FORMAT JSONEachRow",
+		payload,
+	)
+}
+
+func (c *ClickHouse) insertJSONEachRow(ctx context.Context, query string, payload any) error {
+	encoded, err := json.Marshal(payload)
+	if err != nil {
+		return err
+	}
+	endpoint, err := url.Parse(c.endpoint)
+	if err != nil {
+		return err
+	}
+	params := endpoint.Query()
+	params.Set("query", query)
+	params.Set("date_time_input_format", "best_effort")
+	endpoint.RawQuery = params.Encode()
+	request, err := http.NewRequestWithContext(ctx, http.MethodPost, endpoint.String(), bytes.NewReader(append(encoded, '\n')))
+	if err != nil {
+		return err
+	}
+	request.SetBasicAuth(c.user, c.password)
+	request.Header.Set("Content-Type", "application/x-ndjson")
+	response, err := c.client.Do(request)
+	if err != nil {
+		return err
+	}
+	defer response.Body.Close()
+	if response.StatusCode != http.StatusOK {
+		return clickHouseError(response)
+	}
+	return nil
 }
 
 func (c *ClickHouse) queryJSON(ctx context.Context, query string, params url.Values, destination any) error {
@@ -266,4 +346,25 @@ type recommendationRow struct {
 	ExpectedCost     float64  `json:"expected_cost_units_delta"`
 	Confidence       float64  `json:"confidence"`
 	ModelVersion     string   `json:"model_version"`
+	InputWindowStart string   `json:"input_window_start"`
+	InputWindowEnd   string   `json:"input_window_end"`
+	QueryVersion     string   `json:"query_version"`
+	ConfigHash       string   `json:"config_hash"`
+	EvidenceJSON     string   `json:"evidence_json"`
+}
+
+type acknowledgementRow struct {
+	RecommendationID string `json:"recommendation_id"`
+	Actor            string `json:"actor"`
+	Status           string `json:"status"`
+	ObservedAt       string `json:"observed_at"`
+}
+
+type outcomeRow struct {
+	RecommendationID     string  `json:"recommendation_id"`
+	ObservedAt           string  `json:"observed_at"`
+	ObservedP95TTFBDelta float64 `json:"observed_p95_ttfb_delta_ms"`
+	ObservedErrorDelta   float64 `json:"observed_error_rate_delta"`
+	ObservedCostDelta    float64 `json:"observed_cost_units_delta"`
+	Notes                string  `json:"notes"`
 }

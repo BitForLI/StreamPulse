@@ -58,6 +58,8 @@ type Config struct {
 	OutOfOrderMax   Duration   `yaml:"out_of_order_max"`
 	DuplicateRate   float64    `yaml:"duplicate_rate"`
 	SchemaErrorRate float64    `yaml:"schema_error_rate"`
+	DeliveryBuckets int        `yaml:"delivery_key_buckets"`
+	DeliveryTopic   string     `yaml:"delivery_topic"`
 	Locations       []Location `yaml:"locations"`
 	Nodes           []Node     `yaml:"nodes"`
 	Content         Content    `yaml:"content"`
@@ -100,6 +102,9 @@ func (c Config) Validate() error {
 	if !validRate(c.DuplicateRate) || !validRate(c.SchemaErrorRate) {
 		return fmt.Errorf("duplicate_rate and schema_error_rate must be in [0,1]")
 	}
+	if c.DeliveryBuckets < 0 || c.DeliveryBuckets > 1024 {
+		return fmt.Errorf("delivery_key_buckets must be between 1 and 1024 when set")
+	}
 	if len(c.Locations) == 0 || len(c.Nodes) == 0 || c.Content.Count < 2 {
 		return fmt.Errorf("at least one location/node and two content objects are required")
 	}
@@ -132,6 +137,20 @@ func (c Config) Validate() error {
 		}
 	}
 	return nil
+}
+
+func (c Config) DeliveryKeyBucketCount() int {
+	if c.DeliveryBuckets == 0 {
+		return 16
+	}
+	return c.DeliveryBuckets
+}
+
+func (c Config) DeliveryTopicName() string {
+	if c.DeliveryTopic == "" {
+		return "cdn.delivery.v1"
+	}
+	return c.DeliveryTopic
 }
 
 func validRate(v float64) bool { return v >= 0 && v <= 1 }

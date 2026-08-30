@@ -13,7 +13,16 @@ import org.apache.flink.util.OutputTag;
 public class DeliveryEventParser extends ProcessFunction<String, DeliveryEvent> {
     public static final OutputTag<DeadLetterEvent> DEAD_LETTER =
             new OutputTag<DeadLetterEvent>("delivery-dead-letter") {};
+    private final String sourceTopic;
     private transient ObjectMapper mapper;
+
+    public DeliveryEventParser() {
+        this("cdn.delivery.v1");
+    }
+
+    public DeliveryEventParser(String sourceTopic) {
+        this.sourceTopic = sourceTopic;
+    }
 
     @Override
     public void open(org.apache.flink.configuration.Configuration parameters) {
@@ -28,7 +37,7 @@ public class DeliveryEventParser extends ProcessFunction<String, DeliveryEvent> 
             output.collect(event);
         } catch (Exception error) {
             context.output(DEAD_LETTER, new DeadLetterEvent(
-                    "cdn.delivery.v1", Instant.now().toString(), classify(error), safeMessage(error),
+                    sourceTopic, Instant.now().toString(), classify(error), safeMessage(error),
                     sha256(raw), redact(raw)));
         }
     }

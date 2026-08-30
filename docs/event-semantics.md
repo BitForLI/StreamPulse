@@ -7,11 +7,15 @@
 - Kafka record timestamps are transport metadata, not the business-time source
   of truth.
 - Producers emit UTC RFC 3339 timestamps.
-- Out-of-order events inside the configured watermark bound update open
-  windows. Later records follow an explicit late-data policy and are measured.
+- The delivery stream uses a 10-second bounded-out-of-orderness watermark and
+  marks a source partition idle after 30 seconds.
+- Events arriving after the watermark but within five seconds of allowed
+  lateness correct the aggregate and increment `revision`. Events beyond that
+  boundary enter the redacted `TOO_LATE` audit path and do not change the
+  aggregate.
 - Aggregate records carry deterministic window identity and revision so replay
   can be reconciled instead of silently double-counted.
 
-The exact watermark delay and allowed lateness will be fixed together with the
-Flink job and tested against hand-calculated fixtures; they are intentionally
-not claimed before that implementation exists.
+The isolated two-partition integration result is recorded in
+`experiments/results/watermark-lateness/`; one partition was intentionally
+empty, so the test also covers idle-partition watermark progress.

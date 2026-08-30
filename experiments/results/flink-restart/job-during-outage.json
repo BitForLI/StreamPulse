@@ -1,0 +1,361 @@
+{
+    "jid":  "344360c66b87dc6e5ceba0a5bdf84b71",
+    "name":  "StreamPulse CDN Analytics v1",
+    "isStoppable":  false,
+    "state":  "RESTARTING",
+    "start-time":  1788006297625,
+    "end-time":  -1,
+    "duration":  155734,
+    "maxParallelism":  -1,
+    "now":  1788006453359,
+    "timestamps":  {
+                       "INITIALIZING":  1788006297625,
+                       "RUNNING":  1788006451288,
+                       "SUSPENDED":  0,
+                       "FAILED":  0,
+                       "FINISHED":  0,
+                       "RESTARTING":  1788006451358,
+                       "CREATED":  1788006297639,
+                       "CANCELED":  0,
+                       "FAILING":  0,
+                       "CANCELLING":  0,
+                       "RECONCILING":  0
+                   },
+    "vertices":  [
+                     {
+                         "id":  "cbc357ccb763df2852fee8c4fc7d55f2",
+                         "name":  "Source: delivery-kafka-source -\u003e parse-and-validate-delivery",
+                         "maxParallelism":  128,
+                         "parallelism":  1,
+                         "status":  "FAILED",
+                         "start-time":  -1,
+                         "end-time":  -1,
+                         "duration":  -1,
+                         "tasks":  {
+                                       "INITIALIZING":  0,
+                                       "RUNNING":  0,
+                                       "DEPLOYING":  0,
+                                       "SCHEDULED":  0,
+                                       "FAILED":  1,
+                                       "CREATED":  0,
+                                       "RECONCILING":  0,
+                                       "CANCELING":  0,
+                                       "FINISHED":  0,
+                                       "CANCELED":  0
+                                   },
+                         "metrics":  {
+                                         "read-bytes":  0,
+                                         "read-bytes-complete":  true,
+                                         "write-bytes":  0,
+                                         "write-bytes-complete":  true,
+                                         "read-records":  0,
+                                         "read-records-complete":  true,
+                                         "write-records":  0,
+                                         "write-records-complete":  true,
+                                         "accumulated-backpressured-time":  0,
+                                         "accumulated-idle-time":  0,
+                                         "accumulated-busy-time":  0.0
+                                     }
+                     },
+                     {
+                         "id":  "90bea66de1c231edf33913ecd54406c1",
+                         "name":  "deduplicate-by-event-id -\u003e Timestamps/Watermarks",
+                         "maxParallelism":  128,
+                         "parallelism":  1,
+                         "status":  "CANCELED",
+                         "start-time":  -1,
+                         "end-time":  -1,
+                         "duration":  -1,
+                         "tasks":  {
+                                       "INITIALIZING":  0,
+                                       "RUNNING":  0,
+                                       "DEPLOYING":  0,
+                                       "SCHEDULED":  0,
+                                       "FAILED":  0,
+                                       "CREATED":  0,
+                                       "RECONCILING":  0,
+                                       "CANCELING":  0,
+                                       "FINISHED":  0,
+                                       "CANCELED":  1
+                                   },
+                         "metrics":  {
+                                         "read-bytes":  0,
+                                         "read-bytes-complete":  true,
+                                         "write-bytes":  0,
+                                         "write-bytes-complete":  true,
+                                         "read-records":  0,
+                                         "read-records-complete":  true,
+                                         "write-records":  0,
+                                         "write-records-complete":  true,
+                                         "accumulated-backpressured-time":  0,
+                                         "accumulated-idle-time":  0,
+                                         "accumulated-busy-time":  0.0
+                                     }
+                     },
+                     {
+                         "id":  "868904d5bcfd888444c90949642bcca4",
+                         "name":  "node-minute-metrics -\u003e (late-event-audit, Map -\u003e node-metrics-kafka-sink: Writer -\u003e node-metrics-kafka-sink: Committer)",
+                         "maxParallelism":  128,
+                         "parallelism":  1,
+                         "status":  "CANCELED",
+                         "start-time":  -1,
+                         "end-time":  -1,
+                         "duration":  -1,
+                         "tasks":  {
+                                       "INITIALIZING":  0,
+                                       "RUNNING":  0,
+                                       "DEPLOYING":  0,
+                                       "SCHEDULED":  0,
+                                       "FAILED":  0,
+                                       "CREATED":  0,
+                                       "RECONCILING":  0,
+                                       "CANCELING":  0,
+                                       "FINISHED":  0,
+                                       "CANCELED":  1
+                                   },
+                         "metrics":  {
+                                         "read-bytes":  0,
+                                         "read-bytes-complete":  true,
+                                         "write-bytes":  0,
+                                         "write-bytes-complete":  true,
+                                         "read-records":  0,
+                                         "read-records-complete":  true,
+                                         "write-records":  0,
+                                         "write-records-complete":  true,
+                                         "accumulated-backpressured-time":  0,
+                                         "accumulated-idle-time":  0,
+                                         "accumulated-busy-time":  0.0
+                                     }
+                     },
+                     {
+                         "id":  "63026973492754475504e97c79dd190c",
+                         "name":  "Map -\u003e dead-letter-kafka-sink: Writer -\u003e dead-letter-kafka-sink: Committer",
+                         "maxParallelism":  128,
+                         "parallelism":  1,
+                         "status":  "CANCELED",
+                         "start-time":  -1,
+                         "end-time":  -1,
+                         "duration":  -1,
+                         "tasks":  {
+                                       "INITIALIZING":  0,
+                                       "RUNNING":  0,
+                                       "DEPLOYING":  0,
+                                       "SCHEDULED":  0,
+                                       "FAILED":  0,
+                                       "CREATED":  0,
+                                       "RECONCILING":  0,
+                                       "CANCELING":  0,
+                                       "FINISHED":  0,
+                                       "CANCELED":  1
+                                   },
+                         "metrics":  {
+                                         "read-bytes":  0,
+                                         "read-bytes-complete":  true,
+                                         "write-bytes":  0,
+                                         "write-bytes-complete":  true,
+                                         "read-records":  0,
+                                         "read-records-complete":  true,
+                                         "write-records":  0,
+                                         "write-records-complete":  true,
+                                         "accumulated-backpressured-time":  0,
+                                         "accumulated-idle-time":  0,
+                                         "accumulated-busy-time":  0.0
+                                     }
+                     },
+                     {
+                         "id":  "5b07961c3535b2c82029b91cc4bf0fcb",
+                         "name":  "network-minute-metrics -\u003e Map -\u003e network-metrics-kafka-sink: Writer -\u003e network-metrics-kafka-sink: Committer",
+                         "maxParallelism":  128,
+                         "parallelism":  1,
+                         "status":  "CANCELED",
+                         "start-time":  -1,
+                         "end-time":  -1,
+                         "duration":  -1,
+                         "tasks":  {
+                                       "INITIALIZING":  0,
+                                       "RUNNING":  0,
+                                       "DEPLOYING":  0,
+                                       "SCHEDULED":  0,
+                                       "FAILED":  0,
+                                       "CREATED":  0,
+                                       "RECONCILING":  0,
+                                       "CANCELING":  0,
+                                       "FINISHED":  0,
+                                       "CANCELED":  1
+                                   },
+                         "metrics":  {
+                                         "read-bytes":  0,
+                                         "read-bytes-complete":  true,
+                                         "write-bytes":  0,
+                                         "write-bytes-complete":  true,
+                                         "read-records":  0,
+                                         "read-records-complete":  true,
+                                         "write-records":  0,
+                                         "write-records-complete":  true,
+                                         "accumulated-backpressured-time":  0,
+                                         "accumulated-idle-time":  0,
+                                         "accumulated-busy-time":  0.0
+                                     }
+                     },
+                     {
+                         "id":  "d63b16ddb380a5091da49be5b7bf23e3",
+                         "name":  "content-five-minute-metrics -\u003e Map -\u003e content-metrics-kafka-sink: Writer -\u003e content-metrics-kafka-sink: Committer",
+                         "maxParallelism":  128,
+                         "parallelism":  1,
+                         "status":  "CANCELED",
+                         "start-time":  -1,
+                         "end-time":  -1,
+                         "duration":  -1,
+                         "tasks":  {
+                                       "INITIALIZING":  0,
+                                       "RUNNING":  0,
+                                       "DEPLOYING":  0,
+                                       "SCHEDULED":  0,
+                                       "FAILED":  0,
+                                       "CREATED":  0,
+                                       "RECONCILING":  0,
+                                       "CANCELING":  0,
+                                       "FINISHED":  0,
+                                       "CANCELED":  1
+                                   },
+                         "metrics":  {
+                                         "read-bytes":  0,
+                                         "read-bytes-complete":  true,
+                                         "write-bytes":  0,
+                                         "write-bytes-complete":  true,
+                                         "read-records":  0,
+                                         "read-records-complete":  true,
+                                         "write-records":  0,
+                                         "write-records-complete":  true,
+                                         "accumulated-backpressured-time":  0,
+                                         "accumulated-idle-time":  0,
+                                         "accumulated-busy-time":  0.0
+                                     }
+                     }
+                 ],
+    "status-counts":  {
+                          "INITIALIZING":  0,
+                          "RUNNING":  0,
+                          "DEPLOYING":  0,
+                          "SCHEDULED":  0,
+                          "FAILED":  1,
+                          "CREATED":  0,
+                          "RECONCILING":  0,
+                          "CANCELING":  0,
+                          "FINISHED":  0,
+                          "CANCELED":  5
+                      },
+    "plan":  {
+                 "jid":  "344360c66b87dc6e5ceba0a5bdf84b71",
+                 "name":  "StreamPulse CDN Analytics v1",
+                 "type":  "STREAMING",
+                 "nodes":  [
+                               {
+                                   "id":  "63026973492754475504e97c79dd190c",
+                                   "parallelism":  1,
+                                   "operator":  "",
+                                   "operator_strategy":  "",
+                                   "description":  "Map\u003cbr/\u003e+- dead-letter-kafka-sink: Writer\u003cbr/\u003e   +- dead-letter-kafka-sink: Committer\u003cbr/\u003e",
+                                   "inputs":  [
+                                                  {
+                                                      "num":  0,
+                                                      "id":  "868904d5bcfd888444c90949642bcca4",
+                                                      "ship_strategy":  "FORWARD",
+                                                      "exchange":  "pipelined_bounded"
+                                                  },
+                                                  {
+                                                      "num":  1,
+                                                      "id":  "cbc357ccb763df2852fee8c4fc7d55f2",
+                                                      "ship_strategy":  "FORWARD",
+                                                      "exchange":  "pipelined_bounded"
+                                                  }
+                                              ],
+                                   "optimizer_properties":  {
+
+                                                            }
+                               },
+                               {
+                                   "id":  "868904d5bcfd888444c90949642bcca4",
+                                   "parallelism":  1,
+                                   "operator":  "",
+                                   "operator_strategy":  "",
+                                   "description":  "Window(TumblingEventTimeWindows(60000), EventTimeTrigger, NodeMetricAggregate, NodeMetricWindow)\u003cbr/\u003e:- late-event-audit\u003cbr/\u003e+- Map\u003cbr/\u003e   +- node-metrics-kafka-sink: Writer\u003cbr/\u003e      +- node-metrics-kafka-sink: Committer\u003cbr/\u003e",
+                                   "inputs":  [
+                                                  {
+                                                      "num":  0,
+                                                      "id":  "90bea66de1c231edf33913ecd54406c1",
+                                                      "ship_strategy":  "HASH",
+                                                      "exchange":  "pipelined_bounded"
+                                                  }
+                                              ],
+                                   "optimizer_properties":  {
+
+                                                            }
+                               },
+                               {
+                                   "id":  "5b07961c3535b2c82029b91cc4bf0fcb",
+                                   "parallelism":  1,
+                                   "operator":  "",
+                                   "operator_strategy":  "",
+                                   "description":  "Window(TumblingEventTimeWindows(60000), EventTimeTrigger, NodeMetricAggregate, NetworkMetricWindow)\u003cbr/\u003e+- Map\u003cbr/\u003e   +- network-metrics-kafka-sink: Writer\u003cbr/\u003e      +- network-metrics-kafka-sink: Committer\u003cbr/\u003e",
+                                   "inputs":  [
+                                                  {
+                                                      "num":  0,
+                                                      "id":  "90bea66de1c231edf33913ecd54406c1",
+                                                      "ship_strategy":  "HASH",
+                                                      "exchange":  "pipelined_bounded"
+                                                  }
+                                              ],
+                                   "optimizer_properties":  {
+
+                                                            }
+                               },
+                               {
+                                   "id":  "d63b16ddb380a5091da49be5b7bf23e3",
+                                   "parallelism":  1,
+                                   "operator":  "",
+                                   "operator_strategy":  "",
+                                   "description":  "Window(TumblingEventTimeWindows(300000), EventTimeTrigger, NodeMetricAggregate, ContentMetricWindow)\u003cbr/\u003e+- Map\u003cbr/\u003e   +- content-metrics-kafka-sink: Writer\u003cbr/\u003e      +- content-metrics-kafka-sink: Committer\u003cbr/\u003e",
+                                   "inputs":  [
+                                                  {
+                                                      "num":  0,
+                                                      "id":  "90bea66de1c231edf33913ecd54406c1",
+                                                      "ship_strategy":  "HASH",
+                                                      "exchange":  "pipelined_bounded"
+                                                  }
+                                              ],
+                                   "optimizer_properties":  {
+
+                                                            }
+                               },
+                               {
+                                   "id":  "90bea66de1c231edf33913ecd54406c1",
+                                   "parallelism":  1,
+                                   "operator":  "",
+                                   "operator_strategy":  "",
+                                   "description":  "deduplicate-by-event-id\u003cbr/\u003e+- Timestamps/Watermarks\u003cbr/\u003e",
+                                   "inputs":  [
+                                                  {
+                                                      "num":  0,
+                                                      "id":  "cbc357ccb763df2852fee8c4fc7d55f2",
+                                                      "ship_strategy":  "HASH",
+                                                      "exchange":  "pipelined_bounded"
+                                                  }
+                                              ],
+                                   "optimizer_properties":  {
+
+                                                            }
+                               },
+                               {
+                                   "id":  "cbc357ccb763df2852fee8c4fc7d55f2",
+                                   "parallelism":  1,
+                                   "operator":  "",
+                                   "operator_strategy":  "",
+                                   "description":  "Source: delivery-kafka-source\u003cbr/\u003e+- parse-and-validate-delivery\u003cbr/\u003e",
+                                   "optimizer_properties":  {
+
+                                                            }
+                               }
+                           ]
+             }
+}

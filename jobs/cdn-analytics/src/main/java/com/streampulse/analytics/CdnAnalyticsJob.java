@@ -26,6 +26,7 @@ import org.apache.flink.connector.kafka.sink.KafkaSink;
 import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
 import org.apache.flink.streaming.api.CheckpointingMode;
+import org.apache.flink.streaming.api.environment.CheckpointConfig;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
@@ -41,22 +42,34 @@ public final class CdnAnalyticsJob {
 
     public static void main(String[] args) throws Exception {
         String brokers = env("KAFKA_BOOTSTRAP_SERVERS", "kafka:9092");
+        String groupId = env("KAFKA_GROUP_ID", "streampulse-cdn-analytics-v1");
+        String startingOffsets = env("KAFKA_STARTING_OFFSETS", "earliest");
+        String jobName = env("FLINK_JOB_NAME", "StreamPulse CDN Analytics v1");
+        String deliveryTopic = env("KAFKA_DELIVERY_TOPIC", "cdn.delivery.v1");
+        String deadLetterTopic = env("KAFKA_DEAD_LETTER_TOPIC", "cdn.dead-letter.v1");
+        int parallelism = positiveInt(env("FLINK_PARALLELISM", "1"), "FLINK_PARALLELISM");
         StreamExecutionEnvironment environment = StreamExecutionEnvironment.getExecutionEnvironment();
+        environment.setParallelism(parallelism);
         environment.enableCheckpointing(10_000, CheckpointingMode.EXACTLY_ONCE);
         environment.getCheckpointConfig().setMinPauseBetweenCheckpoints(5_000);
-        environment.setRestartStrategy(RestartStrategies.fixedDelayRestart(3, 5_000L));
+        environment.getCheckpointConfig().setExternalizedCheckpointCleanup(
+                CheckpointConfig.ExternalizedCheckpointCleanup.RETAIN_ON_CANCELLATION);
+        environment.setRestartStrategy(RestartStrategies.failureRateRestart(
+                10,
+                org.apache.flink.api.common.time.Time.minutes(5),
+                org.apache.flink.api.common.time.Time.seconds(5)));
 
         KafkaSource<String> source = KafkaSource.<String>builder()
                 .setBootstrapServers(brokers)
-                .setTopics("cdn.delivery.v1")
-                .setGroupId("streampulse-cdn-analytics-v1")
-                .setStartingOffsets(OffsetsInitializer.earliest())
+                .setTopics(deliveryTopic)
+                .setGroupId(groupId)
+                .setStartingOffsets(startingOffsets(startingOffsets))
                 .setValueOnlyDeserializer(new SimpleStringSchema())
                 .build();
 
         SingleOutputStreamOperator<DeliveryEvent> parsed = environment
                 .fromSource(source, WatermarkStrategy.noWatermarks(), "delivery-kafka-source")
-                .process(new DeliveryEventParser())
+                .process(new DeliveryEventParser(deliveryTopic))
                 .name("parse-and-validate-delivery");
 
         DataStream<DeadLetterEvent> deadLetters = parsed.getSideOutput(DeliveryEventParser.DEAD_LETTER);
@@ -95,7 +108,7 @@ public final class CdnAnalyticsJob {
                 .name("content-five-minute-metrics");
 
         DataStream<DeadLetterEvent> lateLetters = nodeMetrics.getSideOutput(LATE_DELIVERY)
-                .map(new LateDeliveryMapper())
+                .map(new LateDeliveryMapper(deliveryTopic))
                 .name("late-event-audit");
 
         nodeMetrics.map(new JsonEncoder<NodeMetric>())
@@ -109,10 +122,10 @@ public final class CdnAnalyticsJob {
                 .name("content-metrics-kafka-sink");
         deadLetters.union(lateLetters)
                 .map(new JsonEncoder<DeadLetterEvent>())
-                .sinkTo(stringSink(brokers, "cdn.dead-letter.v1"))
+                .sinkTo(stringSink(brokers, deadLetterTopic))
                 .name("dead-letter-kafka-sink");
 
-        environment.execute("StreamPulse CDN Analytics v1");
+        environment.execute(jobName);
     }
 
     static KafkaSink<String> stringSink(String brokers, String topic) {
@@ -129,5 +142,24 @@ public final class CdnAnalyticsJob {
     private static String env(String name, String fallback) {
         String value = System.getenv(name);
         return value == null || value.isBlank() ? fallback : value;
+    }
+
+    static OffsetsInitializer startingOffsets(String configuredValue) {
+        if ("earliest".equalsIgnoreCase(configuredValue)) {
+            return OffsetsInitializer.earliest();
+        }
+        if ("latest".equalsIgnoreCase(configuredValue)) {
+            return OffsetsInitializer.latest();
+        }
+        throw new IllegalArgumentException(
+                "KAFKA_STARTING_OFFSETS must be 'earliest' or 'latest', got: " + configuredValue);
+    }
+
+    static int positiveInt(String configuredValue, String name) {
+        int parsed = Integer.parseInt(configuredValue);
+        if (parsed <= 0) {
+            throw new IllegalArgumentException(name + " must be positive, got: " + configuredValue);
+        }
+        return parsed;
     }
 }

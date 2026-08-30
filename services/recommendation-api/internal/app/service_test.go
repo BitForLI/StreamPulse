@@ -198,8 +198,8 @@ func (f *fakePublisher) Publish(_ context.Context, recommendation domain.Recomme
 
 type fakeAudit struct{}
 
-func (*fakeAudit) Acknowledge(domain.Acknowledgement) error { return nil }
-func (*fakeAudit) Outcome(domain.Outcome) error             { return nil }
+func (*fakeAudit) Acknowledge(context.Context, domain.Acknowledgement) error { return nil }
+func (*fakeAudit) Outcome(context.Context, domain.Outcome) error             { return nil }
 
 func testServiceConfig() Config {
 	return Config{
