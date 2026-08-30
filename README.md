@@ -272,6 +272,8 @@ and its machine-readable `summary.json`.
 - `infra/clickhouse/` and `infra/grafana/` — version-pinned storage and dashboard provisioning.
 - `services/recommendation-api/` — Go query, detection, scoring, guardrail, and shadow-publish service.
 - `docs/` — architecture and exact upstream provenance/verification status.
+- [`docs/project-summary.md`](docs/project-summary.md) — exhaustive implementation,
+  evidence, claim-boundary, resume-direction, and interview reference.
 - `experiments/` — reproducible scenarios, aggregate raw evidence, manifests, predictions and reports; large raw event streams remain uncommitted.
 
 ## Scope and limitations
